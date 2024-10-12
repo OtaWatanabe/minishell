@@ -1,31 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/10/12 18:24:07 by otawatanabe      ###   ########.fr       */
+/*   Created: 2023/06/22 10:20:40 by owatanab          #+#    #+#             */
+/*   Updated: 2023/07/24 19:38:13 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_minishell.h"
+#include "libft.h"
 
-int	main(int argc, char *argv[], char *env[])
+size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 {
-	char	*input;
-	char	**tokens;
-	t_tree	*tree;
-	
-	while (1)
+	size_t	i;
+
+	i = 0;
+	while (i + 1 < size && src[i] != 0)
 	{
-		input = get_input();
-		tokens = lexer(input);
-		free(input);
-		tree = parser(tokens);
-		free(tokens);
-		minishell_execute(tree);
-		free_tree(tree);
+		dest[i] = src[i];
+		i++;
 	}
+	if (size > 0)
+		dest[i] = 0;
+	while (src[i] != 0)
+		i++;
+	return (i);
 }
