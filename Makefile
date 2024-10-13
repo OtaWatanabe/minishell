@@ -6,13 +6,13 @@
 #    By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/11 20:10:59 by otawatanabe       #+#    #+#              #
-#    Updated: 2024/10/13 18:24:18 by otawatanabe      ###   ########.fr        #
+#    Updated: 2024/10/13 18:30:51 by otawatanabe      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CFLAGS = -Wall -Wextra -Werror
 CC = cc
-SRCS = main.c get_input.c lexer.c
+SRCS = main.c get_input.c lexer.c free.c
 NAME = minishell
 OBJS = $(SRCS:.c=.o)
 LIB = libft/libft.a
