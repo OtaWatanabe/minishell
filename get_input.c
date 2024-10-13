@@ -6,20 +6,11 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 20:15:27 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/10/12 18:26:17 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/10/13 18:23:40 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
-
-// int	main()
-// {
-// 	while (1)
-// 	{
-// 		char *str = get_input();
-// 		printf("%s\n", str);
-// 	}
-// }
 
 int	check_quote_status(char *str, int squote, int dquote)
 {
@@ -43,11 +34,11 @@ char	*free_strjoin(char *str_1, char *str_2)
 	char	*ret;
 	size_t	i;
 	size_t	j;
-	
-	ret = ft_calloc(ft_strlen(str_1) + ft_strlen(str_2) + 2, 1);
+
+	ret = (char *)ft_calloc(ft_strlen(str_1) + ft_strlen(str_2) + 2, 1);
 	if (ret == NULL)
 	{
-		perror("malloc error\n");
+		perror("ft_calloc error\n");
 		exit(1);
 	}
 	i = 0;
@@ -77,8 +68,11 @@ char	*get_input(void)
 	while (quote_status)
 	{
 		line = readline("> ");
-		quote_status = check_quote_status(line, quote_status % 2, quote_status / 2);
+		quote_status = check_quote_status(
+				line, quote_status % 2, quote_status / 2);
 		joined = free_strjoin(joined, line);
 	}
+	if (*joined)
+		add_history(joined);
 	return (joined);
 }

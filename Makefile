@@ -6,27 +6,31 @@
 #    By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/11 20:10:59 by otawatanabe       #+#    #+#              #
-#    Updated: 2024/10/11 20:13:16 by otawatanabe      ###   ########.fr        #
+#    Updated: 2024/10/13 18:24:18 by otawatanabe      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CFLAGS = -Wall -Wextra -Werror
 CC = cc
-SRCS = main.c
+SRCS = main.c get_input.c lexer.c
 NAME = minishell
 OBJS = $(SRCS:.c=.o)
+LIB = libft/libft.a
 all: $(NAME)
 
 $(NAME): $(OBJS)
+	make -C libft
 	$(CC) $(CFLAGS) $^ $(LIB) -o $@
 
 %.o: %.c
 	cc $(CFLAGS) -c $< -o $@ 
 
 clean:
+	make clean -C libft
 	rm -f $(OBJS)
 
 fclean: clean
+	make fclean -C libft
 	rm -f $(NAME)
 
 re: fclean all

@@ -1,33 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/10/13 18:22:20 by otawatanabe      ###   ########.fr       */
+/*   Created: 2024/10/13 17:56:57 by otawatanabe       #+#    #+#             */
+/*   Updated: 2024/10/13 18:23:08 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-int	main(int argc, char *argv[], char *env[])
+void	free_tokens(char **tokens)
 {
-	char		*input;
-	char		**tokens;
-	t_sequence	*seq;
+	int	i;
 
-	(void)argc;
-	(void)argv;
-	while (1)
+	i = 0;
+	while (tokens[i])
 	{
-		input = get_input();
-		tokens = lexer(input);
-		free(input);
-		seq = parser(tokens);
-		free_tokens(tokens);
-		minishell_execute(seq, env);
-		free_sequence(seq);
+		free(tokens[i]);
+		++i;
+	}
+	free(tokens);
+}
+
+void	free_sequence(t_sequence *seq)
+{
+	t_sequence	*tmp;
+
+	while (seq)
+	{
+		tmp = seq->next;
+		free(seq->type);
+		free(seq->command);
+		free(seq);
+		seq = tmp;
 	}
 }
