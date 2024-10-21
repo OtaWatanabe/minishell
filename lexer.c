@@ -6,11 +6,36 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 18:49:00 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/10/13 18:20:44 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/10/21 20:32:36 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
+
+int	check_special(char *str)
+{
+	if (*str == '<')
+	{
+		if (str[1] == '<' && str[2] && str[2] != ' ')
+			return (1);
+		if (str[1] != ' ' && str[1])
+			return (1);
+		return (0);
+	}
+	if (*str == '>')
+	{
+		if (str[1] == '>' && str[2] && str[2] != ' ')
+			return (1);
+		if (str[1] != ' ' && str[1])
+			return (1);
+		return (0);
+	}
+	if (*str == '|' && str[1] && str[1] != ' ')
+		return (1);
+	if (*str != ' ' && (str[1] == '<' || str[1] == '>' || str[1] == '|'))
+		return (1);
+	return (0);
+}
 
 int	count_token(char *str)
 {
@@ -23,6 +48,7 @@ int	count_token(char *str)
 	ret = 0;
 	while (*str)
 	{
+		ret += check_special(str);
 		if ((quote_flag == 1 && *str == '\'')
 			|| (quote_flag == 2 && *str == '\"'))
 			quote_flag = 0;
@@ -33,9 +59,18 @@ int	count_token(char *str)
 				++ret;
 			word_flag = (*str != ' ');
 		}
+		if (ft_strncmp(str, "<<", 2) == 0 || ft_strncmp(str, ">>", 2) == 0)
+			++str;
 		++str;
 	}
 	return (ret);
+}
+
+char	*special_case(char *str)
+{
+	if (ft_strncmp(str, "<<", 2) == 0 || ft_strncmp(str, ">>", 2) == 0)
+		return (ft_substr(str, 0, 2));
+	return (ft_substr(str, 0, 1));
 }
 
 char	*get_token(char *str)
@@ -45,12 +80,15 @@ char	*get_token(char *str)
 
 	quote_flag = 0;
 	i = 0;
+	if (*str == '<' || *str == '>' || *str == '|')
+		return (special_case(str));
 	while (str[i])
 	{
 		if ((quote_flag == 1 && str[i] == '\'')
 			|| (quote_flag == 2 && str[i] == '\"'))
 			quote_flag = 0;
-		else if (!quote_flag && str[i] == ' ')
+		else if (!quote_flag && (str[i] == ' ' || str[i] == '<'
+				|| str[i] == '>' || str[i] == '|'))
 			return (ft_substr(str, 0, i));
 		else if (!quote_flag)
 			quote_flag = (str[i] == '\'') + (str[i] == '\"') * 2;
