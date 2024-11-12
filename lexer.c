@@ -6,14 +6,16 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 18:49:00 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/10/21 20:32:36 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/10 10:28:17 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-int	check_special(char *str)
+int	check_special(char *str, int quote_flag)
 {
+	if (quote_flag)
+		return (0);
 	if (*str == '<')
 	{
 		if (str[1] == '<' && str[2] && str[2] != ' ')
@@ -48,7 +50,7 @@ int	count_token(char *str)
 	ret = 0;
 	while (*str)
 	{
-		ret += check_special(str);
+		ret += check_special(str, quote_flag);
 		if ((quote_flag == 1 && *str == '\'')
 			|| (quote_flag == 2 && *str == '\"'))
 			quote_flag = 0;
@@ -100,26 +102,25 @@ char	*get_token(char *str)
 char	**lexer(char *input)
 {
 	char	**ret;
-	int		i;
+	size_t	i;
 
 	ret = (char **)ft_calloc(sizeof(char *) * (count_token(input) + 1), 1);
 	if (ret == NULL)
 	{
-		perror("ft_calloc error\n");
-		exit(1);
+		perror("malloc");
+		return (NULL);
 	}
 	i = 0;
 	while (*input)
 	{
-		while (*input == ' ')
-			++input;
-		if (*input == '\0')
-			break ;
+		if (*input == ' ' && ++input)
+			continue ;
 		ret[i] = get_token(input);
 		if (ret[i] == NULL)
 		{
-			perror("ft_substr error\n");
-			exit(1);
+			perror("malloc");
+			free_char_array(ret);
+			return (NULL);
 		}
 		input += ft_strlen(ret[i++]);
 	}

@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/10/21 20:31:29 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/11 11:09:53 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ int	main(int argc, char *argv[], char *env[])
 	while (1)
 	{
 		input = get_input();
+		if (input == NULL)
+		{
+			free_path(shell.env_path);
+			return (0);
+		}
 		tokens = lexer(input);
 		free(input);
 		shell.commands = parser(tokens);
