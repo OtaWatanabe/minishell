@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:36:12 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/10/21 20:34:11 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/11 23:10:28 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,27 @@
 
 void	close_files(t_shell *shell)
 {
-	t_fd	*open_file;
-	t_fd	*tmp;
+	t_intlist	*tmp;
 
 	close(shell->pipe_fd[0]);
 	close(shell->pipe_fd[1]);
-	open_file = shell->openfile;
-	while (open_file)
+	while (shell->open_fd)
 	{
-		close(open_file->fd);
-		if (open_file->file)
-			unlink(open_file->file);
-		tmp = open_file;
-		open_file = tmp->next;
+		close(shell->open_fd->num);
+		tmp = shell->open_fd->next;
 		free(tmp);
+		shell->open_fd = tmp;
 	}
 }
 
-void	reset_fd(t_shell *shell)
+int	reset_fd(t_shell *shell)
 {
-	if (dup2(0, shell->in_fd_dup) == -1 || dup2(0, shell->out_fd_dup) == -1)
+	if ((dup2(shell->in_fd_dup, 0) == -1) || dup2(shell->out_fd_dup, 1) == -1)
 	{
-		perror("dup2 error\n");
-		exit(1);
+		perror("dup2");
+		return (-1);
 	}
+	return (0);
 }
 
 int	create_file(char *filename)
@@ -50,7 +47,23 @@ int	create_file(char *filename)
 	if (fd == -1)
 	{
 		free(filename);
-		perror("open error\n");
+		perror("open");
+		return (-1);
+	}
+	return (0);
+}
+
+int	push_fd(t_shell *shell, int fd, char *file)
+{
+	if (file && add_strlist(shell, file) == -1)
+	{
+		close(fd);
+		unlink(file);
+		return (-1);
+	}
+	if (add_intlist(&shell->open_fd, fd) == -1)
+	{
+		close(fd);
 		return (-1);
 	}
 	return (0);

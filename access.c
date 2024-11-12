@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 20:44:18 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/10/21 18:54:33 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/11 11:06:43 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char	*concat_path(char *path, char *file, t_shell *shell)
 	concat = ft_calloc(path_len + file_len + 2, 1);
 	if (concat == NULL)
 	{
-		perror("malloc error\n");
+		perror("malloc");
 		exit(1);
 	}
 	ft_strlcpy(concat, path, path_len + 1);
@@ -73,8 +73,8 @@ char	*concat_path(char *path, char *file, t_shell *shell)
 
 char	*add_env(t_shell *shell, char *command)
 {
-	char	*path;
-	t_path	*env_path;
+	char		*path;
+	t_strlist	*env_path;
 
 	if (shell->env_path == NULL)
 	{
@@ -84,7 +84,7 @@ char	*add_env(t_shell *shell, char *command)
 	env_path = shell->env_path;
 	while (env_path)
 	{
-		path = concat_path(env_path->path, command, shell);
+		path = ft_strjoin(env_path->str, command);
 		if (access(path, F_OK) != -1)
 			return (path);
 		free(path);
