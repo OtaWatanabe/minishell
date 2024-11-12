@@ -1,35 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/10/21 20:31:29 by otawatanabe      ###   ########.fr       */
+/*   Created: 2023/06/22 10:20:40 by owatanab          #+#    #+#             */
+/*   Updated: 2023/07/24 19:38:13 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_minishell.h"
+#include "libft.h"
 
-int	main(int argc, char *argv[], char *env[])
+size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 {
-	char	*input;
-	char	**tokens;
-	t_shell	shell;
+	size_t	i;
 
-	init_shell(&shell);
-	(void)argc;
-	(void)argv;
-	(void)env;
-	while (1)
+	i = 0;
+	while (i + 1 < size && src[i] != 0)
 	{
-		input = get_input();
-		tokens = lexer(input);
-		free(input);
-		shell.commands = parser(tokens);
-		free_char_array(tokens);
-		pipe_all(&shell);
-		free_commands(shell.commands);
+		dest[i] = src[i];
+		i++;
 	}
+	if (size > 0)
+		dest[i] = 0;
+	while (src[i] != 0)
+		i++;
+	return (i);
 }

@@ -1,35 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   get_input.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/10/21 20:31:29 by otawatanabe      ###   ########.fr       */
+/*   Created: 2024/10/11 20:15:27 by otawatanabe       #+#    #+#             */
+/*   Updated: 2024/10/18 15:39:07 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-int	main(int argc, char *argv[], char *env[])
+char	*get_input(void)
 {
-	char	*input;
-	char	**tokens;
-	t_shell	shell;
+	char	*line;
 
-	init_shell(&shell);
-	(void)argc;
-	(void)argv;
-	(void)env;
-	while (1)
-	{
-		input = get_input();
-		tokens = lexer(input);
-		free(input);
-		shell.commands = parser(tokens);
-		free_char_array(tokens);
-		pipe_all(&shell);
-		free_commands(shell.commands);
-	}
+	line = readline("minishell > ");
+	if (*line)
+		add_history(line);
+	return (line);
 }

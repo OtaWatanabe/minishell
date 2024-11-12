@@ -1,35 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/10/21 20:31:29 by otawatanabe      ###   ########.fr       */
+/*   Created: 2023/10/31 14:18:04 by otawatanabe       #+#    #+#             */
+/*   Updated: 2024/09/10 20:51:49 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_minishell.h"
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdio.h>
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 10000
+# endif
 
-int	main(int argc, char *argv[], char *env[])
-{
-	char	*input;
-	char	**tokens;
-	t_shell	shell;
+char	*get_next_line(int fd);
 
-	init_shell(&shell);
-	(void)argc;
-	(void)argv;
-	(void)env;
-	while (1)
-	{
-		input = get_input();
-		tokens = lexer(input);
-		free(input);
-		shell.commands = parser(tokens);
-		free_char_array(tokens);
-		pipe_all(&shell);
-		free_commands(shell.commands);
-	}
-}
+#endif
