@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 18:01:37 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/12 10:47:19 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/13 11:04:14 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	**remove_redirect(t_shell *shell, t_command *commands)
 	if (ret == NULL)
 	{
 		perror("malloc");
-		return (NULL);
+		exit(1);
 	}
 	while (*command)
 	{
@@ -71,10 +71,7 @@ char	**remove_redirect(t_shell *shell, t_command *commands)
 				&& redirect(shell, command) == -1)
 			|| (**command != '<' && **command != '>'
 				&& check_strdup(ret, i++, *command) == -1))
-		{
-			free_char_array(ret);
-			return (NULL);
-		}
+			exit(1);
 		command += 1 + (command[0][0] == '<' || command[0][0] == '>');
 	}
 	return (ret);

@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:36:12 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/11 23:10:28 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/13 10:57:27 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,13 @@ void	close_files(t_shell *shell)
 	}
 }
 
-int	reset_fd(t_shell *shell)
+void	reset_fd(t_shell *shell)
 {
 	if ((dup2(shell->in_fd_dup, 0) == -1) || dup2(shell->out_fd_dup, 1) == -1)
 	{
 		perror("dup2");
-		return (-1);
+		exit(1);
 	}
-	return (0);
 }
 
 int	create_file(char *filename)

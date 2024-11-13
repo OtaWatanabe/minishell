@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 18:49:00 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/10 10:28:17 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/13 10:55:13 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ char	**lexer(char *input)
 	if (ret == NULL)
 	{
 		perror("malloc");
-		return (NULL);
+		exit(1);
 	}
 	i = 0;
 	while (*input)
@@ -119,8 +119,7 @@ char	**lexer(char *input)
 		if (ret[i] == NULL)
 		{
 			perror("malloc");
-			free_char_array(ret);
-			return (NULL);
+			exit(1);
 		}
 		input += ft_strlen(ret[i++]);
 	}
