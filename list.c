@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 21:32:58 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/11 23:06:39 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/13 11:03:00 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	add_strlist(t_strlist **list, char *str)
 	tmp->next = new;
 }
 
-int	add_intlist(t_strlist **list, int n)
+void	add_intlist(t_strlist **list, int n)
 {
 	t_intlist	*new;
 	t_intlist	*tmp;
@@ -44,7 +44,7 @@ int	add_intlist(t_strlist **list, int n)
 	if (new == NULL)
 	{
 		perror("malloc");
-		return (-1);
+		exit(1);
 	}
 	new->num = n;
 	if (*list == NULL)

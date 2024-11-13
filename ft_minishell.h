@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:52 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/12 12:21:22 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/13 11:03:11 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,13 @@ typedef struct s_shell
 	int			in_fd_dup;
 }	t_shell;
 
-int			add_intlist(t_strlist **list, int n);
+void		add_intlist(t_strlist **list, int n);
 int			add_strlist(t_strlist **list, char *str);
 void		clean_shell(t_shell *shell);
 void		close_files(t_shell *shell);
 void		command_error(char *command);
 char		*command_path(t_shell *shell, char *command);
 int			create_file(char *filename);
-void		existence_error(char *path);
 void		free_char_array(char **array);
 void		free_commands(t_command *tree);
 void		free_path(t_strlist *path);
@@ -85,5 +84,7 @@ int			push_fd(t_shell *shell, int fd, char *file);
 char		**remove_redirect(t_shell *shell, t_command *commands);
 int			reset_fd(t_shell *shell);
 int			set_env(t_shell *shell, char *name, char *str);
+void		set_path(t_shell *shell, char *str);
+void		split_set(t_env *env, char *str);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 18:48:04 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/12 10:45:42 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/13 11:06:02 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	command_execute(t_shell *shell, char **command, int if_last)
 	char	*path;
 
 	if (command == NULL)
-		return ;
+		exit(0);
 	if (!if_last && dup2(shell->pipe_fd[1], 1) == -1)
 	{
 		perror("dup2");
@@ -43,19 +43,19 @@ int	mini_execute(t_shell *shell, t_command *commands, int fd)
 	if (fd != -1 && dup2(fd, 0) == -1)
 	{
 		perror("dup2");
-		return (-1);
+		exit(1);
 	}
 	command = remove_redirect(shell, commands);
 	if (commands->next && pipe(shell->pipe_fd) == -1)
 	{
 		perror("pipe");
-		return (-1);
+		exit(1);
 	}
 	p = fork();
 	if (p == -1)
 	{
 		perror("fork");
-		return (-1);
+		exit(1);
 	}
 	if (p == 0)
 		command_execute(shell, command, commands->next == NULL);
