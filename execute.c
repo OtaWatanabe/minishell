@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 18:48:04 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/13 11:06:02 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/13 14:06:10 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	mini_execute(t_shell *shell, t_command *commands, int fd)
 
 pid_t	wait_all(t_shell *shell)
 {
-	t_intlist	*tmp;
+	t_list	*tmp;
 	int			*stat;
 
 	tmp = shell->pid;

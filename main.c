@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/12 18:26:27 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/13 20:12:41 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(int argc, char *argv[], char *env[])
 		}
 		tokens = lexer(input);
 		free(input);
-		shell.commands = parser(tokens);
+		shell.commands = parser(&shell, tokens);
 		free_char_array(tokens);
 		pipe_all(&shell);
 		free_commands(shell.commands);

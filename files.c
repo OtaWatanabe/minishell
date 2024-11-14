@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:36:12 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/13 10:57:27 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/13 14:06:12 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	close_files(t_shell *shell)
 {
-	t_intlist	*tmp;
+	t_list	*tmp;
 
 	close(shell->pipe_fd[0]);
 	close(shell->pipe_fd[1]);

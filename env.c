@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 10:26:47 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/13 10:52:48 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/14 10:37:52 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	set_env(t_shell *shell, char *name, char *str)
 {
-	t_env	*tmp;
-	t_env	*new;
+	t_list	*tmp;
+	t_list	*new;
 
 	tmp = shell->env;
 	while (tmp && tmp->next && ft_strncmp(tmp->name, name, ft_strlen(name) + 1))
@@ -25,7 +25,7 @@ int	set_env(t_shell *shell, char *name, char *str)
 		tmp->str = str;
 		return (0);
 	}
-	new = (t_env *)ft_calloc(sizeof(t_env), 1);
+	new = (t_list *)ft_calloc(sizeof(t_list), 1);
 	if (new == NULL)
 	{
 		perror("malloc");
@@ -40,7 +40,7 @@ int	set_env(t_shell *shell, char *name, char *str)
 	return (0);
 }
 
-void	split_set(t_env *env, char *str)
+void	split_set(t_list *env, char *str)
 {
 	env->name = ft_substr(str, 0, ft_strchr(str, '=') - str);
 	env->str = ft_strdup(ft_strchr(str, '=') + 1);
@@ -82,9 +82,9 @@ void	set_path(t_shell *shell, char *str)
 
 void	init_env(t_shell *shell, char **env)
 {
-	t_env	*tmp;
+	t_list	*tmp;
 
-	shell->env = (t_env *)ft_calloc(sizeof(t_env), 1);
+	shell->env = (t_list *)ft_calloc(sizeof(t_list), 1);
 	if (shell->env == NULL)
 	{
 		perror("malloc");
@@ -94,7 +94,7 @@ void	init_env(t_shell *shell, char **env)
 	tmp = shell->env;
 	while (*++env)
 	{
-		tmp->next = ft_calloc(sizeof(t_env), 1);
+		tmp->next = ft_calloc(sizeof(t_list), 1);
 		if (tmp->next == NULL)
 		{
 			perror("malloc");
@@ -105,4 +105,27 @@ void	init_env(t_shell *shell, char **env)
 			set_path(shell, tmp->next->str);
 		tmp = tmp->next;
 	}
+}
+
+char	*get_env(t_shell *shell, char *name)
+{
+	t_list	*env;
+	char	*ret;
+	
+	env = shell->env;
+	while (env)
+	{
+		if (ft_strncmp(name, env->name, ft_strlen(env->name) + 1) == 0)
+		{
+			ret = ft_strdup(env->str);
+			if (ret == NULL)
+				error_exit("malloc");
+			return (ret);
+		}
+		env = env->next;
+	}
+	ret = ft_strdup("");
+	if (ret == NULL)
+		error_exit("malloc");
+	return (ret);
 }
