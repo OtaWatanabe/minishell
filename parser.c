@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 11:30:07 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/15 15:16:16 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/15 18:21:37 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,12 @@ int	split_tokens(t_shell *shell, t_command *commands, char **tokens)
 				error_exit("malloc");
 			return (split_tokens(shell, commands->next, tokens + 1));
 		}
-		if ((**tokens == '<' || **tokens == '>')
-			&& add_redirect(shell, &commands->redirect, tokens++) == -1)
-			return (-1);
-		else if (**tokens != '<' && **tokens != '>')
+		if (**tokens == '<' || **tokens == '>')
+		{
+			if (add_redirect(shell, &commands->redirect, tokens++) == -1)
+				return (-1);
+		}
+		else
 			add_list(&commands->tmp, *tokens, NULL, 0);
 		++tokens;
 	}

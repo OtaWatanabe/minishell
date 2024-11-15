@@ -6,73 +6,44 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 18:01:37 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/15 08:37:54 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/15 18:36:46 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-int	redirect(t_shell *shell, char **redirect)
+int	redirect_each(t_shell *shell, t_mlist *redirect)
 {
 	int	fd;
 
-	if (redirect[0][1] == '<')
-		return (here_doc(shell, redirect[1]));
-	else if (redirect[0][1] == '>')
-		fd = open(redirect[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
-	else if (redirect[0][0] == '<')
-		fd = open(redirect[1], O_RDONLY | O_EXCL);
+	printf("redirect: %s\n", redirect->next->name);
+	if (redirect->name[1] == '<')
+		return (here_doc(shell, redirect->next->name));
+	else if (redirect->name[1] == '>')
+		fd = open(redirect->next->name, O_CREAT | O_WRONLY | O_APPEND, 0644);
+	else if (redirect->name[0] == '<')
+		fd = open(redirect->next->name, O_RDONLY | O_EXCL);
 	else
-		fd = open(redirect[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		fd = open(redirect->next->name, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
 	{
 		ft_putstr_fd("mini: ", 2);
-		perror(redirect[1]);
+		perror(redirect->next->name);
 		return (-1);
 	}
-	if (push_fd(shell, fd, NULL) == -1)
-		return (-1);
-	if (dup2(fd, redirect[0][0] == '>') == -1)
-	{
-		perror("dup2");
-		return (-1);
-	}
+	push_fd(shell, fd, NULL);
+	if (dup2(fd, redirect->name[0] == '>') == -1)
+		error_exit("dup2");
 	return (0);
 }
 
-int	check_strdup(char **ret, size_t i, char *str)
+int	redirect_all(t_shell *shell, t_mlist *redirect)
 {
-	ret[i] = ft_strdup(str);
-	if (ret[i] == NULL)
+	while (redirect)
 	{
-		perror("malloc");
-		return (-1);
+		if (redirect_each(shell, redirect) == -1)
+			return (-1);
+		redirect = redirect->next->next;
 	}
 	return (0);
-}
-
-char	**remove_redirect(t_shell *shell, t_command *commands)
-{
-	char	**ret;
-	char	**command;
-	size_t	i;
-
-	i = 0;
-	command = commands->command;
-	ret = (char **)ft_calloc(commands->command_len + 1, 1);
-	if (ret == NULL)
-	{
-		perror("malloc");
-		exit(1);
-	}
-	while (*command)
-	{
-		if (((**command == '<' || **command == '>')
-				&& redirect(shell, command) == -1)
-			|| (**command != '<' && **command != '>'
-				&& check_strdup(ret, i++, *command) == -1))
-			exit(1);
-		command += 1 + (command[0][0] == '<' || command[0][0] == '>');
-	}
-	return (ret);
 }

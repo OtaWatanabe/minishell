@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:52 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/15 15:14:01 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/15 18:06:21 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void		built_in(t_shell *shell, char **command);
 void		clean_shell(t_shell *shell);
 void		close_files(t_shell *shell);
 void		command_error(char *command);
+void		command_execute(t_shell *shell, t_command *command);
 char		*command_path(t_shell *shell, char *command);
 void		copy_str_array(char **from, char **to);
 int			create_file(char *filename);
@@ -77,7 +78,9 @@ void		free_list_element(t_mlist *list);
 void		free_shell(t_shell *shell);
 char		*get_env(t_shell *shell, char *name);
 char		*get_input(void);
+int 		get_quote_status(int quote, char c);
 int			here_doc(t_shell *shell, char *eof);
+char		*h_expand_env(t_shell *shell, char *str);
 void		init_env_list(t_shell *shell, char **env);
 void		init_shell(t_shell *shell, char **env);
 char		**lexer(char *input);
@@ -85,8 +88,8 @@ char		**list_to_array(t_mlist *list);
 int			mini_execute(t_shell *shell, t_command *commands, int fd);
 t_command	*parser(t_shell *shell, char **tokens);
 void		pipe_all(t_shell *shell);
-int			push_fd(t_shell *shell, int fd, char *file);
-char		**remove_redirect(t_shell *shell, t_command *commands);
+void		push_fd(t_shell *shell, int fd, char *file);
+int			redirect_all(t_shell *shell, t_mlist *redirect);
 void		reset_fd(t_shell *shell);
 void		set_env(t_shell *shell, char *name, char *str);
 char		*set_next(t_mlist **str_list, char *str, int if_first);

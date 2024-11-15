@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 18:36:12 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/15 08:35:35 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/15 16:44:15 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,18 +49,9 @@ int	create_file(char *filename)
 	return (0);
 }
 
-int	push_fd(t_shell *shell, int fd, char *file)
+void	push_fd(t_shell *shell, int fd, char *file)
 {
-	if (file && add_list(&shell->tmpfile, file, NULL, 0) == -1)
-	{
-		close(fd);
-		unlink(file);
-		return (-1);
-	}
-	if (add_list(&shell->open_fd, NULL, NULL, fd) == -1)
-	{
-		close(fd);
-		return (-1);
-	}
-	return (0);
+	if (file)
+		add_list(&shell->tmpfile, file, NULL, 0);
+	add_list(&shell->open_fd, NULL, NULL, fd);
 }

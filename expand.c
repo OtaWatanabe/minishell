@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 10:35:42 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/15 15:16:59 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/15 18:06:51 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,20 @@ t_mlist	*expand_split(t_mlist *str_list)
 		if ((*tmp != '\'' && *tmp != '\"')
 			|| (*tmp == '\'' && quote == 2) || (*tmp == '\"' && quote == 1))
 			str_list->name[i++] = *tmp;
-		quote = (!quote && *tmp == '\'') + (!quote && *tmp == '\"') * 2
-			+ (quote == 1 && *tmp != '\'') + (quote == 2 && *tmp != '\"') * 2;
+		quote = get_quote_status(quote, *tmp);
 		++tmp;
 	}
 	free(for_free);
 	return (str_list);
+}
+
+int get_quote_status(int quote, char c)
+{
+	if (!quote && (c == '\'' || c == '\"'))
+		return ((c == '\'') + (c == '\"') * 2);
+	if ((quote == 1 && c == '\'') || (quote == 2 && c == '\"'))
+		return (0);
+	return (quote);
 }
 
 char	*expand_env(t_shell *shell, char *str, int quote)
@@ -97,7 +105,8 @@ char	*expand_env(t_shell *shell, char *str, int quote)
 	i = 0;
 	while (str[i])
 	{
-		if (quote != 1 && str[i] == '$')
+		if (quote != 1 && str[i] == '$' && str[i + 1] != '\''
+			&& str[i + 1] != '\"' && str[i + 1] != ':' && str[i + 1])
 		{
 			str[i] = '\0';
 			tmp = extract_env(shell, str + i + 1, quote);
@@ -107,10 +116,7 @@ char	*expand_env(t_shell *shell, char *str, int quote)
 				error_exit("malloc");
 			return (ret);
 		}
-		quote = (!quote && str[i] == '\'') + (!quote && str[i] == '\"') * 2
-			+ (quote == 1 && str[i] != '\'')
-			+ (quote == 2 && str[i] != '\"') * 2;
-		++i;
+		quote = get_quote_status(quote, str[i++]);
 	}
 	ret = ft_strdup(str);
 	if (ret == NULL)
@@ -126,7 +132,7 @@ char	*extract_env(t_shell *shell, char *str, int quote)
 	size_t	i;
 
 	i = 0;
-	while (str[i] && str[i] != '\'' && str[i] != '\"')
+	while (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != ':')
 		++i;
 	tmp = ft_substr(str, 0, i);
 	if (tmp == NULL)
