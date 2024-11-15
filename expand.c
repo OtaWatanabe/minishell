@@ -6,31 +6,39 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 10:35:42 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/14 11:24:20 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/15 18:06:51 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-int	expand_command(t_shell *shell, t_command *commands)
+int	expand_list(t_shell *shell, t_mlist **list, int if_redirect)
 {
-	t_list	*tmp;
-	t_list	*tmp1;
+	t_mlist	*tmp;
+	t_mlist	*tmp1;
+	t_mlist	*tmp2;
 	char	*before;
 
-	tmp = commands->str_list;
+	tmp = *list;
 	while (tmp)
 	{
 		before = tmp->name;
 		tmp->name = expand_env(shell, tmp->name, 0);
-		free(before);
 		tmp1 = tmp->next;
+		tmp2 = tmp;
 		tmp = expand_split(tmp);
 		tmp->next = tmp1;
+		if (if_redirect && (tmp != tmp2 || tmp->name == NULL))
+		{
+			ambiguous_error(shell, before);
+			free(before);
+			return (-1);
+		}
+		free(before);
 		tmp = tmp1;
 	}
-	skip_null(&commands->str_list);
-	return (check_syntax(commands->str_list));
+	skip_null(list);
+	return (0);
 }
 
 int	expand_all(t_shell *shell, t_command *commands)
@@ -40,29 +48,17 @@ int	expand_all(t_shell *shell, t_command *commands)
 	tmp = commands;
 	while (tmp)
 	{
-		if (expand_command(shell, tmp->str_list) == -1)
+		expand_list(shell, &tmp->tmp, 0);
+		tmp->command = list_to_array(tmp->tmp);
+		free_entire_list(tmp->tmp);
+		if (expand_list(shell, &tmp->redirect, 1) == -1)
 			return (-1);
-		tmp = tmp->next;
-	}
-	tmp = commands;
-	while (tmp)
-	{
-		if (tmp->str_list == NULL && tmp->next)
-		{
-			syntax_error("|");
-			return (-1);
-		}
-		if (tmp->str_list == NULL)
-		{
-			syntax_error(NULL);
-			return (-1);
-		}
 		tmp = tmp->next;
 	}
 	return (0);
 }
 
-t_list	*expand_split(t_list *str_list)
+t_mlist	*expand_split(t_mlist *str_list)
 {
 	int		quote;
 	size_t	i;
@@ -72,6 +68,7 @@ t_list	*expand_split(t_list *str_list)
 	i = 0;
 	for_free = str_list->name;
 	tmp = set_next(&str_list, str_list->name, 1);
+	quote = 0;
 	while (tmp && *tmp)
 	{
 		if (!quote && *tmp == ' ')
@@ -80,14 +77,23 @@ t_list	*expand_split(t_list *str_list)
 			i = 0;
 			continue ;
 		}
-		if (!quote && *tmp != '\'' && *tmp != '\"')
+		if ((*tmp != '\'' && *tmp != '\"')
+			|| (*tmp == '\'' && quote == 2) || (*tmp == '\"' && quote == 1))
 			str_list->name[i++] = *tmp;
-		quote = (!quote && *tmp == '\'') + (!quote && *tmp == '\"') * 2
-			+ (quote == 1 && *tmp != '\'') + (quote == 2 && *tmp != '\"');
+		quote = get_quote_status(quote, *tmp);
 		++tmp;
 	}
 	free(for_free);
 	return (str_list);
+}
+
+int get_quote_status(int quote, char c)
+{
+	if (!quote && (c == '\'' || c == '\"'))
+		return ((c == '\'') + (c == '\"') * 2);
+	if ((quote == 1 && c == '\'') || (quote == 2 && c == '\"'))
+		return (0);
+	return (quote);
 }
 
 char	*expand_env(t_shell *shell, char *str, int quote)
@@ -99,7 +105,8 @@ char	*expand_env(t_shell *shell, char *str, int quote)
 	i = 0;
 	while (str[i])
 	{
-		if (quote != 1 && str[i] == '$')
+		if (quote != 1 && str[i] == '$' && str[i + 1] != '\''
+			&& str[i + 1] != '\"' && str[i + 1] != ':' && str[i + 1])
 		{
 			str[i] = '\0';
 			tmp = extract_env(shell, str + i + 1, quote);
@@ -109,9 +116,7 @@ char	*expand_env(t_shell *shell, char *str, int quote)
 				error_exit("malloc");
 			return (ret);
 		}
-		quote = (!quote && str[i] == '\'') + (!quote && str[i] == '\"') * 2
-			+ (quote == 1 && str[i] != '\'') + (quote == 2 && str[i] != '\"');
-		++i;
+		quote = get_quote_status(quote, str[i++]);
 	}
 	ret = ft_strdup(str);
 	if (ret == NULL)
@@ -127,7 +132,7 @@ char	*extract_env(t_shell *shell, char *str, int quote)
 	size_t	i;
 
 	i = 0;
-	while (str[i] && str[i] != '\'' && str[i] != '\"')
+	while (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != ':')
 		++i;
 	tmp = ft_substr(str, 0, i);
 	if (tmp == NULL)

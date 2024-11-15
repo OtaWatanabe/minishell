@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 20:44:18 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/13 14:08:37 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/14 22:44:50 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,18 @@
 char	*add_env(t_shell *shell, char *command)
 {
 	char	*path;
-	t_list	*env_path;
+	char	**env_path;
 
 	if (shell->env_path == NULL)
 		return (command);
 	env_path = shell->env_path;
-	while (env_path)
+	while (*env_path)
 	{
-		path = ft_strjoin(env_path->str, command);
+		path = ft_strjoin(*env_path, command);
 		if (access(path, F_OK) != -1)
 			return (path);
 		free(path);
-		env_path = env_path->next;
+		++env_path;
 	}
 	command_error(command);
 	exit(127);
