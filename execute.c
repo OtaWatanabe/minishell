@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 18:48:04 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/13 14:06:10 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/15 15:13:03 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	command_execute(t_shell *shell, char **command, int if_last)
 	path = command_path(shell, *command);
 	close(shell->pipe_fd[0]);
 	close(shell->pipe_fd[1]);
-	if (execve(path, command, shell->env) == -1)
+	if (execve(path, command, shell->env_array) == -1)
 	{
 		ft_putstr_fd("mini: ", 2);
 		perror(path);
@@ -59,22 +59,22 @@ int	mini_execute(t_shell *shell, t_command *commands, int fd)
 	}
 	if (p == 0)
 		command_execute(shell, command, commands->next == NULL);
-	add_intlist(shell->pid, p);
+	add_list(&shell->pid, NULL, NULL, p);
 	return (shell->pipe_fd[0]);
 }
 
 pid_t	wait_all(t_shell *shell)
 {
-	t_list	*tmp;
-	int			*stat;
+	t_mlist	*tmp;
+	int		stat;
 
 	tmp = shell->pid;
 	while (tmp->next)
 	{
-		waitpid(tmp->num, stat, 0);
+		waitpid(tmp->num, &stat, 0);
 		tmp = tmp->next;
 	}
-	waitpid(tmp->num, stat, 0);
+	waitpid(tmp->num, &stat, 0);
 	return (WEXITSTATUS(stat));
 }
 
@@ -90,16 +90,11 @@ void	pipe_all(t_shell *shell)
 	{
 		fd = mini_execute(shell, commands, fd);
 		close_files(shell);
-		if (reset_fd(shell) == -1)
-			exit(1);
+		reset_fd(shell);
 		commands = commands->next;
 	}
 	stat = ft_itoa(wait_all(shell));
 	if (stat == NULL)
-	{
-		perror("malloc");
-		exit(1);
-	}
-	if (env_set(shell, "?", stat) == -1)
-		exit(1);
+		error_exit("malloc");
+	set_env(shell, "?", stat);
 }
