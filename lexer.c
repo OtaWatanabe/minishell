@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 18:49:00 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/13 10:55:13 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 09:15:40 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,7 @@ char	**lexer(char *input)
 
 	ret = (char **)ft_calloc(sizeof(char *) * (count_token(input) + 1), 1);
 	if (ret == NULL)
-	{
-		perror("malloc");
-		exit(1);
-	}
+		error_exit("malloc");
 	i = 0;
 	while (*input)
 	{
@@ -117,10 +114,7 @@ char	**lexer(char *input)
 			continue ;
 		ret[i] = get_token(input);
 		if (ret[i] == NULL)
-		{
-			perror("malloc");
-			exit(1);
-		}
+			error_exit("malloc");
 		input += ft_strlen(ret[i++]);
 	}
 	return (ret);

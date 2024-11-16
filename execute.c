@@ -6,100 +6,108 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 18:48:04 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/13 14:06:10 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 14:24:31 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-void	command_execute(t_shell *shell, char **command, int if_last)
+void	command_execute(t_shell *shell, t_command *command)
 {
 	char	*path;
 
-	if (command == NULL)
+	if (*command->command == NULL)
 		exit(0);
-	if (!if_last && dup2(shell->pipe_fd[1], 1) == -1)
+	if (command->next)
 	{
-		perror("dup2");
-		exit(1);
+		if (dup2(shell->pipe_fd[1], 1) == -1)
+			error_exit("dup2");
+		close(shell->pipe_fd[0]);
+		close(shell->pipe_fd[1]);
 	}
-	built_in(shell, command);
-	path = command_path(shell, *command);
-	close(shell->pipe_fd[0]);
-	close(shell->pipe_fd[1]);
-	if (execve(path, command, shell->env) == -1)
+	if (command->in_fd != 0 && dup2(command->in_fd, 0) == -1)
+		error_exit("dup2");
+	if (command->out_fd != 1 && dup2(command->out_fd, 1) == -1)
+		error_exit("dup2");
+	path = command_path(shell, command->command[0]);
+	if (execve(path, command->command, shell->env_array) == -1)
 	{
 		ft_putstr_fd("mini: ", 2);
 		perror(path);
-		exit(127);
+		exit(128);
 	}
 }
 
-int	mini_execute(t_shell *shell, t_command *commands, int fd)
+int	mini_execute(t_shell *shell, t_command *commands)
 {
 	pid_t	p;
-	char	**command;
 
-	if (fd != -1 && dup2(fd, 0) == -1)
-	{
-		perror("dup2");
-		exit(1);
-	}
-	command = remove_redirect(shell, commands);
+	if (commands->in_fd == -1 || commands->out_fd == -1)
+		return (-1);
 	if (commands->next && pipe(shell->pipe_fd) == -1)
-	{
-		perror("pipe");
-		exit(1);
-	}
+		error_exit("pipe");
 	p = fork();
 	if (p == -1)
-	{
-		perror("fork");
-		exit(1);
-	}
+		error_exit("fork");
 	if (p == 0)
-		command_execute(shell, command, commands->next == NULL);
-	add_intlist(shell->pid, p);
-	return (shell->pipe_fd[0]);
+		command_execute(shell, commands);
+	add_list(&shell->pid, NULL, NULL, p);
+	if (commands->in_fd != 0)
+		close(commands->in_fd);
+	if (commands->out_fd != 1)
+		close(commands->out_fd);
+	return (0);
 }
 
-pid_t	wait_all(t_shell *shell)
+pid_t	wait_all(t_shell *shell, int error)
 {
-	t_list	*tmp;
-	int			*stat;
+	t_mlist	*tmp;
+	int		stat;
 
+	if (shell->pid == NULL)
+		return (0);
 	tmp = shell->pid;
 	while (tmp->next)
 	{
-		waitpid(tmp->num, stat, 0);
+		waitpid(tmp->num, &stat, 0);
 		tmp = tmp->next;
 	}
-	waitpid(tmp->num, stat, 0);
+	waitpid(tmp->num, &stat, 0);
+	if (error == -1)
+		return (1);
 	return (WEXITSTATUS(stat));
+}
+
+void	reset(t_shell *shell)
+{
+	free_entire_list(shell->pid);
+	shell->pid = NULL;
+	delete_files(shell);
+	if (dup2(shell->in_fd_dup, 0) == -1)
+		error_exit("dup2");
 }
 
 void	pipe_all(t_shell *shell)
 {
-	int			fd;
-	char		*stat;
 	t_command	*commands;
+	int			error;
 
 	commands = shell->commands;
-	fd = -1;
+	if (commands == NULL)
+		return ;
+	redirect_all(shell);
 	while (commands)
 	{
-		fd = mini_execute(shell, commands, fd);
-		close_files(shell);
-		if (reset_fd(shell) == -1)
-			exit(1);
+		error = mini_execute(shell, commands);
+		if (commands->next)
+		{
+			if (dup2(shell->pipe_fd[0], 0) == -1)
+				error_exit("dup2");
+			close(shell->pipe_fd[0]);
+			close(shell->pipe_fd[1]);
+		}
 		commands = commands->next;
 	}
-	stat = ft_itoa(wait_all(shell));
-	if (stat == NULL)
-	{
-		perror("malloc");
-		exit(1);
-	}
-	if (env_set(shell, "?", stat) == -1)
-		exit(1);
+	shell->exit_status = wait_all(shell, error);
+	reset(shell);
 }

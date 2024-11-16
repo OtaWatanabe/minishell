@@ -6,11 +6,44 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/13 20:12:41 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 14:24:45 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
+
+__attribute__((destructor))
+static void destructor() {
+	system("leaks -q minishell");
+}
+
+void	print_char_array(char **array)
+{
+	printf("print_char_array\n");
+	while (*array)
+	{
+		printf("%s\n", *array);
+		++array;
+	}
+}
+
+void	print_commands(t_command *commands)
+{
+	while (commands)
+	{
+		t_mlist	*redirect = commands->redirect;
+
+		printf("str_list\n");
+		print_char_array(commands->command);
+		printf("redirect\n");
+		while (redirect)
+		{
+			printf("%s\n", redirect->name);
+			redirect = redirect->next;
+		}
+		commands = commands->next;
+	}
+}
 
 int	main(int argc, char *argv[], char *env[])
 {
@@ -26,7 +59,7 @@ int	main(int argc, char *argv[], char *env[])
 		input = get_input();
 		if (input == NULL)
 		{
-			free_path(shell.env_path);
+			free_shell(&shell);
 			return (0);
 		}
 		tokens = lexer(input);

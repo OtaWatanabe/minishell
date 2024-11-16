@@ -6,73 +6,57 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 18:01:37 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/13 11:04:14 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 14:21:18 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-int	redirect(t_shell *shell, char **redirect)
+int	redirect_each(t_shell *shell, t_command *commands, t_mlist *redirect)
 {
 	int	fd;
 
-	if (redirect[0][1] == '<')
-		return (here_doc(shell, redirect[1]));
-	else if (redirect[0][1] == '>')
-		fd = open(redirect[1], O_CREAT | O_WRONLY | O_APPEND, 0644);
-	else if (redirect[0][0] == '<')
-		fd = open(redirect[1], O_RDONLY | O_EXCL);
+	if (redirect->str[1] == '<')
+		fd = here_doc(shell, redirect);
+	else if (redirect->str[1] == '>')
+		fd = open(redirect->name, O_CREAT | O_WRONLY | O_APPEND, 0644);
+	else if (redirect->str[0] == '<')
+		fd = open(redirect->name, O_RDONLY | O_EXCL);
 	else
-		fd = open(redirect[1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		fd = open(redirect->name, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (redirect->str[0] == '<')
+		commands->in_fd = fd;
+	else
+		commands->out_fd = fd;
 	if (fd == -1)
 	{
 		ft_putstr_fd("mini: ", 2);
-		perror(redirect[1]);
-		return (-1);
-	}
-	if (push_fd(shell, fd, NULL) == -1)
-		return (-1);
-	if (dup2(fd, redirect[0][0] == '>') == -1)
-	{
-		perror("dup2");
+		perror(redirect->name);
 		return (-1);
 	}
 	return (0);
 }
 
-int	check_strdup(char **ret, size_t i, char *str)
+void	redirect_all(t_shell *shell)
 {
-	ret[i] = ft_strdup(str);
-	if (ret[i] == NULL)
-	{
-		perror("malloc");
-		return (-1);
-	}
-	return (0);
-}
+	t_command	*commands;
+	t_mlist		*redirect;
 
-char	**remove_redirect(t_shell *shell, t_command *commands)
-{
-	char	**ret;
-	char	**command;
-	size_t	i;
-
-	i = 0;
-	command = commands->command;
-	ret = (char **)ft_calloc(commands->command_len + 1, 1);
-	if (ret == NULL)
+	commands = shell->commands;
+	while (commands)
 	{
-		perror("malloc");
-		exit(1);
+		commands->out_fd = 1;
+		redirect = commands->redirect;
+		while (redirect)
+		{
+			if (redirect->name[0] == '<' && commands->in_fd != 0)
+				close(commands->in_fd);
+			else if (redirect->name[0] == '>' && commands->out_fd != 1)
+				close(commands->out_fd);
+			if (redirect_each(shell, commands, redirect) == -1)
+				break ;
+			redirect = redirect->next;
+		}
+		commands = commands->next;
 	}
-	while (*command)
-	{
-		if (((**command == '<' || **command == '>')
-				&& redirect(shell, command) == -1)
-			|| (**command != '<' && **command != '>'
-				&& check_strdup(ret, i++, *command) == -1))
-			exit(1);
-		command += 1 + (command[0][0] == '<' || command[0][0] == '>');
-	}
-	return (ret);
 }
