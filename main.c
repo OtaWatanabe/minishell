@@ -6,11 +6,16 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/15 18:19:12 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 14:24:45 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
+
+__attribute__((destructor))
+static void destructor() {
+	system("leaks -q minishell");
+}
 
 void	print_char_array(char **array)
 {
@@ -60,7 +65,6 @@ int	main(int argc, char *argv[], char *env[])
 		tokens = lexer(input);
 		free(input);
 		shell.commands = parser(&shell, tokens);
-		print_commands(shell.commands);
 		free_char_array(tokens);
 		pipe_all(&shell);
 		free_commands(shell.commands);

@@ -6,20 +6,19 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 11:30:07 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/15 18:21:37 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 14:24:51 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-int	add_redirect(t_shell *shell, t_mlist **redirect, char **tokens)
+int	add_redirect(t_shell *shell, t_command *command, char **tokens)
 {
 	if (tokens[1] == NULL)
 		return (syntax_error(shell, NULL));
 	if (tokens[1][0] == '|' || tokens[1][0] == '<' || tokens[1][0] == '>')
 		return (syntax_error(shell, tokens[1]));
-	add_list(redirect, *tokens, NULL, 0);
-	add_list(redirect, tokens[1], NULL, 0);
+	add_list(&command->redirect, tokens[1], tokens[0], 0);
 	return (0);
 }
 
@@ -38,7 +37,7 @@ int	split_tokens(t_shell *shell, t_command *commands, char **tokens)
 		}
 		if (**tokens == '<' || **tokens == '>')
 		{
-			if (add_redirect(shell, &commands->redirect, tokens++) == -1)
+			if (add_redirect(shell, commands, tokens++) == -1)
 				return (-1);
 		}
 		else
@@ -62,5 +61,8 @@ t_command	*parser(t_shell *shell, char **tokens)
 		free_commands(ret);
 		return (NULL);
 	}
+	shell->if_pipe = 0;
+	if (ret->next)
+		shell->if_pipe = 1;
 	return (ret);
 }

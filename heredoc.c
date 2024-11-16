@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:20:12 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/15 18:10:38 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 14:24:26 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,14 @@ char	*h_expand_env(t_shell *shell, char *str)
 	char	*tmp1;
 
 	tmp = ft_strchr(str, '$');
+	while (tmp && (tmp[1] == '\'' || tmp[1] == '\"' || tmp[1] == ':' || !tmp[1]))
+		tmp = ft_strchr(tmp + 1, '$');
 	if (tmp)
 	{
 		tmp1 = ft_substr(str, 0, tmp - str);
 		if (tmp1 == NULL)
 			error_exit("malloc");
-		tmp = h_extract_env(shell, tmp);
+		tmp = h_extract_env(shell, tmp + 1);
 		ret = ft_strjoin(tmp1, tmp);
 		free(tmp1);
 		free(tmp);
@@ -128,32 +130,32 @@ int	open_dup(char *filename)
 	if (fd == -1)
 	{
 		unlink(filename);
-		free(filename);
 		error_exit("malloc");
 	}
 	if (dup2(fd, 0) == -1)
 	{
 		close(fd);
 		unlink(filename);
-		free(filename);
 		error_exit("dup2");
 	}
 	return (fd);
 }
 
-int	here_doc(t_shell *shell, char *eof)
+int	here_doc(t_shell *shell, t_mlist *here)
 {
 	int		fd;
 	char	*filename;
 
-	if (dup2(shell->in_fd_dup, 0) == -1)
-		error_exit("dup2");
 	filename = get_filename();
-	fd = open(filename, O_WRONLY | O_CREAT, 0600);
+	if (dup2(shell->in_fd_dup, 0) == -1 || dup2(shell->out_fd_dup, 1) == -1)
+		error_exit("dup2");
+	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
 	if (fd == -1)
 		error_exit("open");
-	read_doc(shell, fd, eof);
+	read_doc(shell, fd, here->name);
+	here = here->next;
 	fd = open_dup(filename);
-	push_fd(shell, fd, filename);
-	return (0);
+	add_list(&shell->tmpfile, filename, NULL, 0);
+	free(filename);
+	return (fd);
 }

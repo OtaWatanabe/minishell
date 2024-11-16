@@ -6,36 +6,47 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 10:35:42 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/15 18:06:51 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 14:23:51 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
+t_mlist	*expand_str(t_shell *shell, t_mlist *list, int if_redirect)
+{
+	char	*before;
+	t_mlist	*tmp;
+	t_mlist	*tmp1;
+
+	before = list->name;
+	if (list->str == NULL || ft_strncmp(list->str, "<<", 3))
+		list->name = expand_env(shell, before, 0);
+	tmp = list;
+	tmp1 = tmp->next;
+	tmp = expand_split(tmp);
+	tmp->next = tmp1;
+	if (if_redirect && (tmp != list || tmp->name == NULL))
+	{
+		ambiguous_error(shell, before);
+		free(before);
+		return (NULL);
+	}
+	if (list->str == NULL || ft_strncmp(list->str, "<<", 3))
+		free(before);
+	return (tmp);
+}
+
 int	expand_list(t_shell *shell, t_mlist **list, int if_redirect)
 {
 	t_mlist	*tmp;
-	t_mlist	*tmp1;
-	t_mlist	*tmp2;
-	char	*before;
 
 	tmp = *list;
 	while (tmp)
 	{
-		before = tmp->name;
-		tmp->name = expand_env(shell, tmp->name, 0);
-		tmp1 = tmp->next;
-		tmp2 = tmp;
-		tmp = expand_split(tmp);
-		tmp->next = tmp1;
-		if (if_redirect && (tmp != tmp2 || tmp->name == NULL))
-		{
-			ambiguous_error(shell, before);
-			free(before);
+		tmp = expand_str(shell, tmp, if_redirect);
+		if (tmp == NULL)
 			return (-1);
-		}
-		free(before);
-		tmp = tmp1;
+		tmp = tmp->next;
 	}
 	skip_null(list);
 	return (0);
@@ -51,6 +62,7 @@ int	expand_all(t_shell *shell, t_command *commands)
 		expand_list(shell, &tmp->tmp, 0);
 		tmp->command = list_to_array(tmp->tmp);
 		free_entire_list(tmp->tmp);
+		tmp->tmp = NULL;
 		if (expand_list(shell, &tmp->redirect, 1) == -1)
 			return (-1);
 		tmp = tmp->next;
@@ -118,10 +130,7 @@ char	*expand_env(t_shell *shell, char *str, int quote)
 		}
 		quote = get_quote_status(quote, str[i++]);
 	}
-	ret = ft_strdup(str);
-	if (ret == NULL)
-		error_exit("malloc");
-	return (ret);
+	return (error_strdup(str));
 }
 
 char	*extract_env(t_shell *shell, char *str, int quote)
@@ -132,7 +141,8 @@ char	*extract_env(t_shell *shell, char *str, int quote)
 	size_t	i;
 
 	i = 0;
-	while (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != ':')
+	while (str[i] && str[i] != '\'' && str[i] != '\"'
+		&& str[i] != ':' && str[i] != '$')
 		++i;
 	tmp = ft_substr(str, 0, i);
 	if (tmp == NULL)
