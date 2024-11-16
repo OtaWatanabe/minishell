@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+         #
+#    By: shucream <shucream@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/03 19:01:00 by otawatanabe       #+#    #+#              #
-#    Updated: 2024/11/16 17:08:43 by owatanab         ###   ########.fr        #
+#    Updated: 2024/11/16 19:10:21 by shucream         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CFLAGS = -Wall -Wextra -Werror -lreadline -Wno-unused-command-line-argument
 CC = cc
-SRCS = main.c execute.c access.c error.c heredoc.c get_next_line.c get_next_line_utils.c lexer.c free.c get_input.c files.c redirect.c env.c init.c expand.c list.c parser.c expand_helper.c env_helper.c signal.c
+SRCS = ft_env.c ft_cd.c ft_exit.c ft_unset.c ft_builtins.c ft_pwd.c ft_echo.c main.c execute.c access.c error.c heredoc.c get_next_line.c get_next_line_utils.c lexer.c free.c get_input.c files.c redirect.c env.c init.c expand.c list.c parser.c expand_helper.c env_helper.c signal.c
 NAME = minishell
 OBJS = $(SRCS:.c=.o)
 LIB = libft/libft.a

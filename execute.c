@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shucream <shucream@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 18:48:04 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 18:16:15 by owatanab         ###   ########.fr       */
+/*   Updated: 2024/11/16 20:38:53 by shucream         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,16 @@ void	set_fd(t_shell *shell, t_command *command)
 int	mini_execute(t_shell *shell, t_command *commands)
 {
 	pid_t	p;
-	// int		status;
+	int		status;
 
 	if (commands->in_fd == -1 || commands->out_fd == -1)
 		return (-1);
 	if (commands->next && pipe(shell->pipe_fd) == -1)
 		error_exit("pipe");
 	set_fd(shell, commands);
-	// status = built_in(shell, commands->command);
-	// if (status != -1)
-	// 	return (status);
+	status = built_in(shell, commands->command);
+	if (status != -1)
+		return (status);
 	p = fork();
 	if (p == -1)
 		error_exit("fork");

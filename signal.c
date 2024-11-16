@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shucream <shucream@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 15:08:31 by owatanab          #+#    #+#             */
-/*   Updated: 2024/11/16 18:29:26 by owatanab         ###   ########.fr       */
+/*   Updated: 2024/11/16 18:50:47 by shucream         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void    read_handler(int signum)
 {
     (void)signum;
     printf("\n");
-    rl_replace_line("", 0);
+    // rl_replace_line("", 0);
     rl_on_new_line();
     rl_redisplay();
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_minishell.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shucream <shucream@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:52 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 18:30:14 by owatanab         ###   ########.fr       */
+/*   Updated: 2024/11/16 19:10:28 by shucream         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,5 +106,16 @@ char		*skip_space(char *str);
 void		split_env(t_mlist *env, char *str);
 int			split_tokens(t_shell *shell, t_command *commands, char **tokens);
 int			syntax_error(t_shell *shell, char *str);
+
+int ft_cd(t_shell *shell, char **command);
+int ft_echo(char **command);
+int ft_pwd ();
+int ft_unset(t_shell *shell, char **command);
+int ft_exit(char **commands);
+int ft_pwd ();
+int ft_env(t_shell *shell);
+
+
+
 
 #endif
