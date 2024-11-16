@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
+/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:20:12 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 14:24:26 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 18:32:46 by owatanab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,9 @@ int	here_doc(t_shell *shell, t_mlist *here)
 	int		fd;
 	char	*filename;
 
+	shell->sa.sa_handler = heredoc_handler;
+	if (sigaction(SIGINT, &shell->sa, NULL) == -1)
+        error_exit("sigaction");
 	filename = get_filename();
 	if (dup2(shell->in_fd_dup, 0) == -1 || dup2(shell->out_fd_dup, 1) == -1)
 		error_exit("dup2");
@@ -157,5 +160,8 @@ int	here_doc(t_shell *shell, t_mlist *here)
 	fd = open_dup(filename);
 	add_list(&shell->tmpfile, filename, NULL, 0);
 	free(filename);
+	shell->sa.sa_handler = parent;
+	if (sigaction(SIGINT, &shell->sa, NULL) == -1)
+    	error_exit("sigaction");
 	return (fd);
 }

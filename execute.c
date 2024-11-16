@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
+/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 18:48:04 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 14:24:31 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 18:16:15 by owatanab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,17 @@ void	command_execute(t_shell *shell, t_command *command)
 
 	if (*command->command == NULL)
 		exit(0);
+	path = command_path(shell, command->command[0]);
+	if (execve(path, command->command, shell->env_array) == -1)
+	{
+		ft_putstr_fd("mini: ", 2);
+		perror(path);
+		exit(128);
+	}
+}
+
+void	set_fd(t_shell *shell, t_command *command)
+{
 	if (command->next)
 	{
 		if (dup2(shell->pipe_fd[1], 1) == -1)
@@ -29,28 +40,30 @@ void	command_execute(t_shell *shell, t_command *command)
 		error_exit("dup2");
 	if (command->out_fd != 1 && dup2(command->out_fd, 1) == -1)
 		error_exit("dup2");
-	path = command_path(shell, command->command[0]);
-	if (execve(path, command->command, shell->env_array) == -1)
-	{
-		ft_putstr_fd("mini: ", 2);
-		perror(path);
-		exit(128);
-	}
 }
 
 int	mini_execute(t_shell *shell, t_command *commands)
 {
 	pid_t	p;
+	// int		status;
 
 	if (commands->in_fd == -1 || commands->out_fd == -1)
 		return (-1);
 	if (commands->next && pipe(shell->pipe_fd) == -1)
 		error_exit("pipe");
+	set_fd(shell, commands);
+	// status = built_in(shell, commands->command);
+	// if (status != -1)
+	// 	return (status);
 	p = fork();
 	if (p == -1)
 		error_exit("fork");
 	if (p == 0)
+	{
+		if (sigemptyset(&shell->sa.sa_mask) == -1)
+        	error_exit("sigempty_set");
 		command_execute(shell, commands);
+	}
 	add_list(&shell->pid, NULL, NULL, p);
 	if (commands->in_fd != 0)
 		close(commands->in_fd);
@@ -85,6 +98,7 @@ void	reset(t_shell *shell)
 	delete_files(shell);
 	if (dup2(shell->in_fd_dup, 0) == -1)
 		error_exit("dup2");
+	g_signal = 0;
 }
 
 void	pipe_all(t_shell *shell)
@@ -99,6 +113,8 @@ void	pipe_all(t_shell *shell)
 	while (commands)
 	{
 		error = mini_execute(shell, commands);
+		if (dup2(shell->out_fd_dup, 1) == -1)
+			error_exit("dup2");
 		if (commands->next)
 		{
 			if (dup2(shell->pipe_fd[0], 0) == -1)

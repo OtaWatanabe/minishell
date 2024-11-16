@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
+/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 10:52:37 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 14:24:22 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 17:07:40 by owatanab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	init_env_array(t_shell *shell, char **env)
 void	init_shell(t_shell *shell, char **env)
 {
 	ft_memset(shell, 0, sizeof(t_shell));
+	init_sigaction(shell);
 	if (*env)
 		init_env_array(shell, env);
 	shell->in_fd_dup = dup(0);

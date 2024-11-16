@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
+/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 10:35:42 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 14:23:51 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 16:10:47 by owatanab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,8 @@ char	*expand_env(t_shell *shell, char *str, int quote)
 	i = 0;
 	while (str[i])
 	{
-		if (quote != 1 && str[i] == '$' && str[i + 1] != '\''
-			&& str[i + 1] != '\"' && str[i + 1] != ':' && str[i + 1])
+		if (quote != 1 && str[i] == '$' && str[i + 1] != ':' && str[i + 1]
+			&& (quote == 0 || (str[i + 1] != '\'' && str[i + 1] != '\"')))
 		{
 			str[i] = '\0';
 			tmp = extract_env(shell, str + i + 1, quote);
