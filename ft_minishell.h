@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_minishell.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:52 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 18:30:14 by owatanab         ###   ########.fr       */
+/*   Updated: 2024/11/16 21:02:53 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_shell
 	t_mlist				*pid;
 	t_mlist				*tmpfile;
 	char				**env_path;
+	char				*input;
 	int					pipe_fd[2];
 	char				**env_array;
 	t_command			*commands;
@@ -74,6 +75,7 @@ void		copy_str_array(char **from, char **to);
 void		delete_files(t_shell *shell);
 void		error_exit(char *str);
 char		*error_strdup(char *str);
+void		execute_all(t_shell *shell);
 int			expand_all(t_shell *shell, t_command *commands);
 char		*expand_env(t_shell *shell, char *str, int quote);
 t_mlist		*expand_split(t_mlist *str_list);
@@ -83,8 +85,14 @@ void		free_commands(t_command *commands);
 void		free_entire_list(t_mlist *list);
 void		free_list_element(t_mlist *list);
 void		free_shell(t_shell *shell);
+int 		ft_cd(t_shell *shell, char **command);
+int 		ft_echo(char **command);
+int 		ft_env(t_shell *shell);
+int 		ft_exit(char **commands);
+int 		ft_pwd ();
+int 		ft_unset(t_shell *shell, char **command);
 char		*get_env(t_shell *shell, char *name);
-char		*get_input(t_shell *shell);
+void		get_input(t_shell *shell);
 int 		get_quote_status(int quote, char c);
 int			here_doc(t_shell *shell, t_mlist *here);
 void    	heredoc_handler(int signum);
@@ -95,7 +103,6 @@ void    	init_sigaction(t_shell *shell);
 char		**list_to_array(t_mlist *list);
 void    	parent(int signum);
 t_command	*parser(t_shell *shell, char **tokens);
-void		pipe_all(t_shell *shell);
 void    	read_handler(int signum);
 void		redirect_all(t_shell *shell);
 void		set_env(t_shell *shell, char *name, char *str);

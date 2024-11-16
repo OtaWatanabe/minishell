@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 19:23:11 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 19:02:55 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	print_commands(t_command *commands)
 
 int	main(int argc, char *argv[], char *env[])
 {
+	char	*input;
 	char	**tokens;
 	t_shell	shell;
 
@@ -55,17 +56,17 @@ int	main(int argc, char *argv[], char *env[])
 	(void)argv;
 	while (1)
 	{
-		get_input(&shell);
-		if (shell.input == NULL)
+		input = get_input(&shell);
+		if (input == NULL)
 		{
 			free_shell(&shell);
 			return (0);
 		}
-		tokens = lexer(shell.input);
-		free(shell.input);
-		shell.input = NULL;
+		tokens = lexer(input);
+		free(input);
 		shell.commands = parser(&shell, tokens);
 		free_char_array(tokens);
-		execute_all(&shell);
+		pipe_all(&shell);
+		free_commands(shell.commands);
 	}
 }

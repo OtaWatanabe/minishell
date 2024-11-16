@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 15:08:31 by owatanab          #+#    #+#             */
-/*   Updated: 2024/11/16 18:29:26 by owatanab         ###   ########.fr       */
+/*   Updated: 2024/11/16 20:23:43 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void    read_handler(int signum)
 void    init_sigaction(t_shell *shell)
 {
     if (sigemptyset(&shell->sa.sa_mask) == -1)
-        error_exit("sigempty_set");
+        error_exit("sigemptyset");
     shell->sa.sa_handler = read_handler;
     if (sigaction(SIGINT, &shell->sa, NULL) == -1)
         error_exit("sigaction");
@@ -47,5 +47,9 @@ void    init_sigaction(t_shell *shell)
 void    heredoc_handler(int signum)
 {
     (void)signum;
-    printf("\nminishell > ");
+	g_signal = 1;
+    printf("\nminishell ");
+	rl_replace_line("", 1);
+	rl_on_new_line();
+	rl_redisplay();
 }

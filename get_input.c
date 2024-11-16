@@ -3,32 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   get_input.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 20:15:27 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 18:19:25 by owatanab         ###   ########.fr       */
+/*   Updated: 2024/11/16 20:26:56 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-char	*get_input(t_shell *shell)
+void	get_input(t_shell *shell)
 {
-	char	*line;
-
 	shell->sa.sa_handler = read_handler;
 	if (sigaction(SIGINT, &shell->sa, NULL) == -1)
         error_exit("sigaction");
-	line = readline("minishell > ");
-	if (line == NULL)
-		return (NULL);
-	while (*line == '\0')
+	if (shell->input)
+		return ;
+	shell->input = readline("minishell > ");
+	if (shell->input == NULL)
+		return ;
+	while (*shell->input == '\0')
 	{
-		free(line);
-		line = readline("minishell > ");
-		if (line == NULL)
-			return (NULL);
+		free(shell->input);
+		shell->input = readline("minishell > ");
+		if (shell->input == NULL)
+			return ;
 	}
-	add_history(line);
-	return (line);
+	add_history(shell->input);
+	if (g_signal)
+	{
+		g_signal = 0;
+		shell->exit_status = 1;
+	}
 }

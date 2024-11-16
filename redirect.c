@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 18:01:37 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 14:21:18 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/16 19:08:53 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ int	redirect_each(t_shell *shell, t_command *commands, t_mlist *redirect)
 		commands->out_fd = fd;
 	if (fd == -1)
 	{
+		if (g_signal)
+			return (-1);
 		ft_putstr_fd("mini: ", 2);
 		perror(redirect->name);
 		return (-1);
@@ -57,6 +59,8 @@ void	redirect_all(t_shell *shell)
 				break ;
 			redirect = redirect->next;
 		}
+		if (g_signal)
+			return ;
 		commands = commands->next;
 	}
 }

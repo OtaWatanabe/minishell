@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:20:12 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 18:32:46 by owatanab         ###   ########.fr       */
+/*   Updated: 2024/11/16 20:06:12 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ char	*h_extract_env(t_shell *shell, char *str)
 	size_t	i;
 
 	i = 0;
-	while (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != ':')
+	while (str[i] && str[i] != '\'' && str[i] != '\"'
+		&& str[i] != ':' && str[i] != ' ')
 		++i;
 	tmp = ft_substr(str, 0, i);
 	if (tmp == NULL)
@@ -81,7 +82,8 @@ char	*h_expand_env(t_shell *shell, char *str)
 	char	*tmp1;
 
 	tmp = ft_strchr(str, '$');
-	while (tmp && (tmp[1] == '\'' || tmp[1] == '\"' || tmp[1] == ':' || !tmp[1]))
+	while (tmp && (tmp[1] == '\'' || tmp[1] == '\"' 
+		|| tmp[1] == ':' || !tmp[1] || tmp[1] == ' '))
 		tmp = ft_strchr(tmp + 1, '$');
 	if (tmp)
 	{
@@ -100,25 +102,33 @@ char	*h_expand_env(t_shell *shell, char *str)
 	return (ret);
 }
 
-void	read_doc(t_shell *shell, int fd, char *eof)
+void	read_doc(t_shell *shell, char *filename, char *eof)
 {
-	char	*line;
 	char	*tmp;
-
+	int		fd;
+	
+	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+	if (fd == -1)
+		error_exit("open");
 	while (1)
 	{
-		line = readline("> ");
-		tmp = line;
-		if (line == NULL || ft_strncmp(line, eof, ft_strlen(eof) + 1) == 0)
+		shell->input = readline("> ");
+		if (g_signal)
 		{
-			close(fd);
-			free(line);
+			free(filename);
 			return ;
 		}
-		line = h_expand_env(shell, line);
+		tmp = shell->input;
+		if (tmp == NULL || ft_strncmp(tmp, eof, ft_strlen(eof) + 1) == 0)
+		{
+			close(fd);
+			free(tmp);
+			return ;
+		}
+		tmp = h_expand_env(shell, tmp);
+		free(shell->input);
+		ft_putendl_fd(tmp, fd);
 		free(tmp);
-		ft_putendl_fd(line, fd);
-		free(line);
 	}
 }
 
@@ -152,10 +162,9 @@ int	here_doc(t_shell *shell, t_mlist *here)
 	filename = get_filename();
 	if (dup2(shell->in_fd_dup, 0) == -1 || dup2(shell->out_fd_dup, 1) == -1)
 		error_exit("dup2");
-	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-	if (fd == -1)
-		error_exit("open");
-	read_doc(shell, fd, here->name);
+	read_doc(shell, filename, here->name);
+	if (g_signal)
+		return (-1);
 	here = here->next;
 	fd = open_dup(filename);
 	add_list(&shell->tmpfile, filename, NULL, 0);
