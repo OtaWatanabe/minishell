@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 14:28:06 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 14:28:06 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 17:00:36 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	delete_words(char **env_array, char *str, int len)
 
 int	ft_unset(t_shell *shell, char **command)
 {
-	int i;
+	int	i;
 
 	i = 1;
 	while (command[i] != NULL)

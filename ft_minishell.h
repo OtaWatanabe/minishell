@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:52 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 14:41:54 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 17:05:30 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ char		*error_strdup(char *str);
 void		execute_all(t_shell *shell);
 int			expand_all(t_shell *shell, t_command *commands);
 char		*expand_env(t_shell *shell, char *str, int quote);
+int			expand_list(t_shell *shell, t_mlist **list, int if_redirect);
 t_mlist		*expand_split(t_mlist *str_list);
 char		*extract_env(t_shell *shell, char *str, int quote);
 void		free_char_array(char **array);
@@ -96,6 +97,7 @@ int 		ft_unset(t_shell *shell, char **command);
 char		*get_env(t_shell *shell, char *name);
 void		get_input(t_shell *shell);
 int 		get_quote_status(int quote, char c);
+char		*get_random(size_t n);
 int			here_doc(t_shell *shell, t_mlist *here);
 void    	heredoc_handler(int signum);
 char		*h_expand_env(t_shell *shell, char *str);
@@ -103,11 +105,15 @@ void		init_shell(t_shell *shell, char **env);
 char		**lexer(char *input);
 void    	init_sigaction(t_shell *shell);
 char		**list_to_array(t_mlist *list);
+int			open_dup(char *filename);
 void    	parent(int signum);
 t_command	*parser(t_shell *shell, char **tokens);
+int			get_quote_status(int quote, char c);
 void    	read_handler(int signum);
 void		redirect_all(t_shell *shell);
+void		reset(t_shell *shell);
 void		set_env(t_shell *shell, char *name, char *str);
+void		set_fd(t_shell *shell, t_command *command);
 char		*set_next(t_mlist **str_list, char *str, int if_first);
 void		set_path(t_shell *shell, char *str);
 void		skip_null(t_mlist **list);

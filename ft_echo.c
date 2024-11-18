@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 14:26:19 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 16:04:32 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 16:44:01 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ int	is_option(char *commands)
 
 int	ft_echo(char **command)
 {
-	int newlineflag;
-	int i;
+	int	newlineflag;
+	int	i;
 
 	newlineflag = 0;
 	i = 1;

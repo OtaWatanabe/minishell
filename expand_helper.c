@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 10:38:41 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/15 15:15:32 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 16:55:57 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ size_t	get_head_len(char *str)
 		if (!quote && (str[i] == '\'' || str[i] == '\"'))
 			quote = (str[i] == '\'') + (str[i] == '\"') * 2;
 		else if ((quote == 1 && str[i] == '\'') || (quote == 2
-					&& str[i] == '\"'))
+				&& str[i] == '\"'))
 			quote = 0;
 		else if (!quote && str[i] == ' ')
 			return (len);
@@ -95,4 +95,13 @@ void	skip_null(t_mlist **list)
 		else
 			tmp1 = tmp1->next;
 	}
+}
+
+int	get_quote_status(int quote, char c)
+{
+	if (!quote && (c == '\'' || c == '\"'))
+		return ((c == '\'') + (c == '\"') * 2);
+	if ((quote == 1 && c == '\'') || (quote == 2 && c == '\"'))
+		return (0);
+	return (quote);
 }

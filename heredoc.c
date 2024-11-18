@@ -6,33 +6,11 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:20:12 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 10:22:49 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 17:04:44 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
-
-char	*get_random(size_t n)
-{
-	char	*ret;
-	size_t	i;
-
-	ret = ft_calloc(n + 14, 1);
-	if (ret == NULL)
-		error_exit("malloc");
-	i = 0;
-	while (i < 12)
-	{
-		ret[i] = "/tmp/tmpfile"[i];
-		++i;
-	}
-	while (i - 12 < n)
-	{
-		ret[i] = '+';
-		++i;
-	}
-	return (ret);
-}
 
 char	*get_filename(void)
 {
@@ -128,25 +106,6 @@ void	read_doc(t_shell *shell, char *filename, char *eof)
 		ft_putendl_fd(tmp, fd);
 		free(tmp);
 	}
-}
-
-int	open_dup(char *filename)
-{
-	int	fd;
-
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-	{
-		unlink(filename);
-		error_exit("malloc");
-	}
-	if (dup2(fd, 0) == -1)
-	{
-		close(fd);
-		unlink(filename);
-		error_exit("dup2");
-	}
-	return (fd);
 }
 
 int	here_doc(t_shell *shell, t_mlist *here)

@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 18:49:00 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 09:15:40 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 17:08:45 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ char	*get_token(char *str)
 				&& str[i] == '\"'))
 			quote_flag = 0;
 		else if (!quote_flag && (str[i] == ' ' || str[i] == '<' || str[i] == '>'
-					|| str[i] == '|'))
+				|| str[i] == '|'))
 			return (ft_substr(str, 0, i));
 		else if (!quote_flag)
 			quote_flag = (str[i] == '\'') + (str[i] == '\"') * 2;

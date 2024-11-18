@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 20:15:27 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 09:30:19 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 16:43:18 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	get_input(t_shell *shell)
 {
 	shell->sa.sa_handler = read_handler;
 	if (sigaction(SIGINT, &shell->sa, NULL) == -1)
-        error_exit("sigaction");
+		error_exit("sigaction");
 	if (shell->input)
 		return ;
 	shell->input = readline("minishell > ");

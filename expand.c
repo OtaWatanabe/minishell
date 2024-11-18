@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 10:35:42 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 16:10:47 by owatanab         ###   ########.fr       */
+/*   Updated: 2024/11/18 16:56:04 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,24 +52,6 @@ int	expand_list(t_shell *shell, t_mlist **list, int if_redirect)
 	return (0);
 }
 
-int	expand_all(t_shell *shell, t_command *commands)
-{
-	t_command	*tmp;
-
-	tmp = commands;
-	while (tmp)
-	{
-		expand_list(shell, &tmp->tmp, 0);
-		tmp->command = list_to_array(tmp->tmp);
-		free_entire_list(tmp->tmp);
-		tmp->tmp = NULL;
-		if (expand_list(shell, &tmp->redirect, 1) == -1)
-			return (-1);
-		tmp = tmp->next;
-	}
-	return (0);
-}
-
 t_mlist	*expand_split(t_mlist *str_list)
 {
 	int		quote;
@@ -90,22 +72,13 @@ t_mlist	*expand_split(t_mlist *str_list)
 			continue ;
 		}
 		if ((*tmp != '\'' && *tmp != '\"') || (*tmp == '\'' && quote == 2)
-				|| (*tmp == '\"' && quote == 1))
+			|| (*tmp == '\"' && quote == 1))
 			str_list->name[i++] = *tmp;
 		quote = get_quote_status(quote, *tmp);
 		++tmp;
 	}
 	free(for_free);
 	return (str_list);
-}
-
-int	get_quote_status(int quote, char c)
-{
-	if (!quote && (c == '\'' || c == '\"'))
-		return ((c == '\'') + (c == '\"') * 2);
-	if ((quote == 1 && c == '\'') || (quote == 2 && c == '\"'))
-		return (0);
-	return (quote);
 }
 
 char	*expand_env(t_shell *shell, char *str, int quote)

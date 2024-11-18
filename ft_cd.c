@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 14:26:14 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 15:43:53 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 16:58:11 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ int	chdir_set(t_shell *shell, char *path_str)
 
 int	ft_cd(t_shell *shell, char **command)
 {
-	char *cd_str;
-	int ret;
+	char	*cd_str;
+	int		ret;
 
 	if (shell->if_pipe)
 		return (0);
