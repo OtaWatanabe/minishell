@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 18:48:04 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 14:58:29 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 15:16:02 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,11 @@ pid_t	wait_all(t_shell *shell, int status)
 	if (shell->pid == NULL)
 		return (0);
 	tmp = shell->pid;
-	while (tmp->next)
+	while (tmp)
 	{
 		waitpid(tmp->num, &stat, 0);
 		tmp = tmp->next;
 	}
-	waitpid(tmp->num, &stat, 0);
 	if (status == -1)
 		return (1);
 	if (0 < status)
@@ -146,7 +145,6 @@ void	execute_all(t_shell *shell)
 
 	if (shell->commands == NULL)
 		return ;
-	printf("%d\n", shell->if_pipe);
 	redirect_all(shell);
 	if (g_signal)
 	{

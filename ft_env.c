@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 14:27:52 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 14:27:52 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 15:16:27 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,5 @@ int    ft_env(t_shell *shell)
             printf("%s\n", shell->env_array[i]);
         i++;
     }
-
     return (0);
 }
