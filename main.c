@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 19:23:11 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 14:02:52 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,11 @@ int	main(int argc, char *argv[], char *env[])
 	init_shell(&shell, env);
 	(void)argc;
 	(void)argv;
+	rl_done = 1;
 	while (1)
 	{
 		get_input(&shell);
+		check_ctrl_c(&shell);
 		if (shell.input == NULL)
 		{
 			free_shell(&shell);

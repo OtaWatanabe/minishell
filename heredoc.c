@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:20:12 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 20:06:12 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 10:22:49 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,15 +114,13 @@ void	read_doc(t_shell *shell, char *filename, char *eof)
 	{
 		shell->input = readline("> ");
 		if (g_signal)
-		{
-			free(filename);
 			return ;
-		}
 		tmp = shell->input;
 		if (tmp == NULL || ft_strncmp(tmp, eof, ft_strlen(eof) + 1) == 0)
 		{
 			close(fd);
 			free(tmp);
+			shell->input = NULL;
 			return ;
 		}
 		tmp = h_expand_env(shell, tmp);
@@ -156,21 +154,18 @@ int	here_doc(t_shell *shell, t_mlist *here)
 	int		fd;
 	char	*filename;
 
-	shell->sa.sa_handler = heredoc_handler;
-	if (sigaction(SIGINT, &shell->sa, NULL) == -1)
-        error_exit("sigaction");
 	filename = get_filename();
 	if (dup2(shell->in_fd_dup, 0) == -1 || dup2(shell->out_fd_dup, 1) == -1)
 		error_exit("dup2");
 	read_doc(shell, filename, here->name);
 	if (g_signal)
+	{
+		free(filename);
 		return (-1);
+	}
 	here = here->next;
 	fd = open_dup(filename);
 	add_list(&shell->tmpfile, filename, NULL, 0);
 	free(filename);
-	shell->sa.sa_handler = parent;
-	if (sigaction(SIGINT, &shell->sa, NULL) == -1)
-    	error_exit("sigaction");
 	return (fd);
 }

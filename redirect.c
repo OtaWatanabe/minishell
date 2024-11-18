@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 18:01:37 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 19:08:53 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 10:25:04 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@ void	redirect_all(t_shell *shell)
 	t_command	*commands;
 	t_mlist		*redirect;
 
+	shell->sa.sa_handler = heredoc_handler;
+	if (sigaction(SIGINT, &shell->sa, NULL) == -1)
+    	error_exit("sigaction");
 	commands = shell->commands;
 	while (commands)
 	{

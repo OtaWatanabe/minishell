@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:52 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 21:02:53 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 14:41:54 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void		add_list(t_mlist **list, char *name, char *str, int num);
 int			add_redirect(t_shell *shell, t_command *command, char **tokens);
 int			ambiguous_error(t_shell *shell, char *str);
 int			built_in(t_shell *shell, char **command);
+void		check_ctrl_c(t_shell *shell);
 void		clean_shell(t_shell *shell);
 void		close_files(t_shell *shell);
 void		command_error(char *command);
@@ -88,7 +89,8 @@ void		free_shell(t_shell *shell);
 int 		ft_cd(t_shell *shell, char **command);
 int 		ft_echo(char **command);
 int 		ft_env(t_shell *shell);
-int 		ft_exit(char **commands);
+int    		ft_exit(t_shell *shell, char **commands);
+int			ft_export(t_shell *shell, char **command);
 int 		ft_pwd ();
 int 		ft_unset(t_shell *shell, char **command);
 char		*get_env(t_shell *shell, char *name);

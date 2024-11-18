@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 10:52:37 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 20:18:49 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 11:29:39 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ void	init_env_array(t_shell *shell, char **env)
 void	init_shell(t_shell *shell, char **env)
 {
 	ft_memset(shell, 0, sizeof(t_shell));
+	if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
+		error_exit("signal");
 	init_sigaction(shell);
 	if (*env)
 		init_env_array(shell, env);

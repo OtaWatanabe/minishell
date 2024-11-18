@@ -1,80 +1,85 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_echo.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/18 14:26:19 by otawatanabe       #+#    #+#             */
+/*   Updated: 2024/11/18 14:28:40 by otawatanabe      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_minishell.h"
 
-
-void space_words_print(char **word, int newlineflag)
+void    space_words_print(char **word, int newlineflag)
 {
-    int i;
+    int    i;
 
     i = 0;
-    while(word[i] != NULL)
+    while (word[i] != NULL)
     {
-        if(i == 0)
-            printf("%s",word[i]);
+        if (i == 0)
+            printf("%s", word[i]);
         else
-            printf(" %s",word[i]);
+            printf(" %s", word[i]);
         i++;
     }
-    if(newlineflag == 0)
+    if (newlineflag == 0)
         printf("\n");
 }
 
-int has_option(char **commands)
+int    has_option(char **commands)
 {
-    if(strncmp(commands[1],"-n",3) == 0)
-        return 1;
-    return 0;
-}
-
-int is_option(char *commands)
-{
-    /*
-       単語がオプションか？文字列の最初に-がついてるかのジャッジだけ。 
-       -nnnnnとかのnだけならok
-       -nnnnaとかn以外が入ってると文字列判定
-       return 1で文字列判定をする。
-    */
-    int i;
+    int    i;
 
     i = 1;
-    if(commands[0] != '-')
-        return 1;
-    while(commands[i] != '\0')//ここで単語自体を判断した方がいい
+    if (commands[1][0] != '-')
+        return (0);
+    while (commands[1][i] != '\0')
     {
-        if(commands[i] != 'n')
-            return 1;
+        if (commands[1][i] != 'n')
+            return (0);
         i++;
     }
-    return 0;
+    return (1);
 }
 
-int ft_echo(char **command)
+int    is_option(char *commands)
 {
-    /*
-        重要なのは改行する出力か否か、とオプションか文字列かの判定。
-        コマンドの単語群の
-        command[1以降][]がオプションかコマンド引数なのかの判定
-        文字列判定が出たならそれ以降はすべて文字として出力。 
-        はじめは文字列判定、そこからオプションで-nnnでオプションフラグが立つ。
-    */
-    int newlineflag;
-    int i;
+    int    i;
+
+    i = 1;
+    if (commands[0] != '-')
+        return (1);
+    while (commands[i] != '\0')
+    {
+        if (commands[i] != 'n')
+            return (1);
+        i++;
+    }
+    return (0);
+}
+
+int    ft_echo(char **command)
+{
+    int    newlineflag;
+    int    i;
 
     newlineflag = 0;
     i = 1;
-
-    newlineflag = has_option(command);
-    while(command[i] != NULL)
+    if (command[1] == NULL)
     {
-        if(is_option(command[i]) == 1)
+        printf("\n");
+        return (0);
+    }
+    newlineflag = has_option(command);
+    while (command[i] != NULL)
+    {
+        if (is_option(command[i]) == 1)
             break ;
         i++;
     }
-    space_words_print(&command[i],newlineflag);
-    return 0;
+    space_words_print(&command[i], newlineflag);
+    return (0);
 }
-
-// int main(int ac, char **av)
-// {
-//     av++;
-//     ft_echo(av);
-// }

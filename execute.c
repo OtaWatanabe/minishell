@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 18:48:04 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 20:56:22 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 14:58:29 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@ void	command_execute(t_shell *shell, t_command *command)
 
 	if (command->next)
 		close(shell->pipe_fd[0]);
+	init_sigaction(shell);
+	if (signal(SIGQUIT, SIG_DFL) == SIG_ERR)
+		error_exit("signal");
 	if (*command->command == NULL)
 		exit(0);
 	path = command_path(shell, command->command[0]);
@@ -61,11 +64,7 @@ int	mini_execute(t_shell *shell, t_command *commands)
 	if (p == -1)
 		error_exit("fork");
 	if (p == 0)
-	{
-		if (sigemptyset(&shell->sa.sa_mask) == -1)
-        	error_exit("sigempty_set");
 		command_execute(shell, commands);
-	}
 	add_list(&shell->pid, NULL, NULL, p);
 	if (commands->in_fd != 0)
 		close(commands->in_fd);
@@ -106,8 +105,12 @@ void	reset(t_shell *shell)
 		shell->exit_status = 1;
 	if (g_signal == 2)
 		shell->exit_status = 130;
+	if (g_signal ==3)
+		shell->exit_status = 131;
 	g_signal = 0;
 	free_commands(shell->commands);
+	if (signal(SIGQUIT, SIG_IGN) == SIG_ERR)
+		error_exit("signal");
 }
 
 int	pipe_all(t_shell *shell)
@@ -115,6 +118,9 @@ int	pipe_all(t_shell *shell)
 	t_command	*commands;
 	int			status;
 
+	shell->sa.sa_handler = parent;
+	if (sigaction(SIGINT, &shell->sa, NULL) == -1 || sigaction(SIGQUIT, &shell->sa, NULL) == -1)
+    	error_exit("sigaction");
 	commands = shell->commands;
 	while (commands)
 	{
@@ -140,6 +146,7 @@ void	execute_all(t_shell *shell)
 
 	if (shell->commands == NULL)
 		return ;
+	printf("%d\n", shell->if_pipe);
 	redirect_all(shell);
 	if (g_signal)
 	{

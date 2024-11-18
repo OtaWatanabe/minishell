@@ -1,15 +1,61 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/18 14:27:58 by otawatanabe       #+#    #+#             */
+/*   Updated: 2024/11/18 15:03:40 by otawatanabe      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_minishell.h"
 
-int ft_exit(char **commands)
+int check_numeric(char *str)
 {
-    int exit_status;
+	if (*str == '-')
+		++str;
+	if (*str == '\0')
+		return (0);
+	while ('0' <= *str && *str <= '9')
+		++str;
+	if (*str)
+		return (0);
+	return (1);
+}
+
+int	check_status(char **commands)
+{
     int i;
 
     i = 1;
-    while(commands[i] != NULL)
+    if (commands[i] == NULL)
+        return (0);
+    while (commands[i] != NULL)
         i++;
-    if(i > 1)
-        error_exit("exit: too many arguments");
-    exit_status = ft_atoi(commands[1]) % 256;
-    return exit_status;
+	if (check_numeric(commands[1]) == 0)
+		return (255);
+    if (i == 2)
+        return (ft_atoi(commands[1]) % 256);
+    return (1);
+}
+
+int    ft_exit(t_shell *shell, char **commands)
+{
+    int exit_status;
+
+	exit_status = check_status(commands);
+	if (exit_status == 1)
+	{
+		ft_putstr_fd("mini: exit: too many arguments\n", 2);
+    	return (1);
+	}
+	if (shell->if_pipe == 0)
+		ft_putstr_fd("exit\n", 2);
+	if (exit_status == 255)
+		ft_putstr_fd("bash: exit: numeric argument required\n", 2);
+	if (shell->if_pipe)
+		return (exit_status);
+	exit(exit_status);
 }

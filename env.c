@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 10:26:47 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 09:36:36 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 14:13:25 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ char	*get_env(t_shell *shell, char *name)
 	char	**env;
 	char	*ret;
 
+	printf("get_env\n");
 	env = shell->env_array;
 	if (ft_strncmp(name, "?", 2) == 0)
 	{
