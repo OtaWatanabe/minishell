@@ -58,8 +58,8 @@ char	*h_extract_env(t_shell *shell, char *str)
 	size_t	i;
 
 	i = 0;
-	while (str[i] && str[i] != '\'' && str[i] != '\"'
-		&& str[i] != ':' && str[i] != ' ')
+	while (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != ':'
+		&& str[i] != ' ')
 		++i;
 	tmp = ft_substr(str, 0, i);
 	if (tmp == NULL)
@@ -82,8 +82,8 @@ char	*h_expand_env(t_shell *shell, char *str)
 	char	*tmp1;
 
 	tmp = ft_strchr(str, '$');
-	while (tmp && (tmp[1] == '\'' || tmp[1] == '\"' 
-		|| tmp[1] == ':' || !tmp[1] || tmp[1] == ' '))
+	while (tmp && (tmp[1] == '\'' || tmp[1] == '\"' || tmp[1] == ':' || !tmp[1]
+			|| tmp[1] == ' '))
 		tmp = ft_strchr(tmp + 1, '$');
 	if (tmp)
 	{
@@ -106,7 +106,7 @@ void	read_doc(t_shell *shell, char *filename, char *eof)
 {
 	char	*tmp;
 	int		fd;
-	
+
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
 	if (fd == -1)
 		error_exit("open");

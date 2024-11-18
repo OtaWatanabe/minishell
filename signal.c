@@ -12,11 +12,11 @@
 
 #include "ft_minishell.h"
 
-int g_signal;
+int		g_signal;
 
-void    parent(int signum)
+void	parent(int signum)
 {
-    if (signum == SIGINT)
+	if (signum == SIGINT)
 		g_signal = 2;
 	if (signum == SIGQUIT)
 	{
@@ -25,30 +25,30 @@ void    parent(int signum)
 	}
 }
 
-void    read_handler(int signum)
+void	read_handler(int signum)
 {
-    (void)signum;
+	(void)signum;
 	g_signal = 1;
-    printf("\n");
-    rl_replace_line("", 0);
-    rl_on_new_line();
-    rl_redisplay();
+	printf("\n");
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
 }
 
-void    init_sigaction(t_shell *shell)
+void	init_sigaction(t_shell *shell)
 {
-    if (sigemptyset(&shell->sa.sa_mask) == -1)
-        error_exit("sigemptyset");
-    // shell->sa.sa_handler = ignore;
-    // if (sigaction(SIGQUIT, &shell->sa, NULL) == -1)
-    //     error_exit("sigaction");
+	if (sigemptyset(&shell->sa.sa_mask) == -1)
+		error_exit("sigemptyset");
+	// shell->sa.sa_handler = ignore;
+	// if (sigaction(SIGQUIT, &shell->sa, NULL) == -1)
+	//     error_exit("sigaction");
 }
 
-void    heredoc_handler(int signum)
+void	heredoc_handler(int signum)
 {
-    (void)signum;
+	(void)signum;
 	g_signal = 1;
-    printf("\nminishell ");
+	printf("\nminishell ");
 	rl_replace_line("", 1);
 	rl_on_new_line();
 	rl_redisplay();

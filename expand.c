@@ -89,8 +89,8 @@ t_mlist	*expand_split(t_mlist *str_list)
 			i = 0;
 			continue ;
 		}
-		if ((*tmp != '\'' && *tmp != '\"')
-			|| (*tmp == '\'' && quote == 2) || (*tmp == '\"' && quote == 1))
+		if ((*tmp != '\'' && *tmp != '\"') || (*tmp == '\'' && quote == 2)
+				|| (*tmp == '\"' && quote == 1))
 			str_list->name[i++] = *tmp;
 		quote = get_quote_status(quote, *tmp);
 		++tmp;
@@ -99,7 +99,7 @@ t_mlist	*expand_split(t_mlist *str_list)
 	return (str_list);
 }
 
-int get_quote_status(int quote, char c)
+int	get_quote_status(int quote, char c)
 {
 	if (!quote && (c == '\'' || c == '\"'))
 		return ((c == '\'') + (c == '\"') * 2);
@@ -141,8 +141,8 @@ char	*extract_env(t_shell *shell, char *str, int quote)
 	size_t	i;
 
 	i = 0;
-	while (str[i] && str[i] != '\'' && str[i] != '\"'
-		&& str[i] != ':' && str[i] != '$')
+	while (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != ':'
+		&& str[i] != '$')
 		++i;
 	tmp = ft_substr(str, 0, i);
 	if (tmp == NULL)

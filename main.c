@@ -12,8 +12,8 @@
 
 #include "ft_minishell.h"
 
-__attribute__((destructor))
-static void destructor() {
+__attribute__((destructor)) static void destructor()
+{
 	system("leaks -q minishell");
 }
 
@@ -29,10 +29,11 @@ void	print_char_array(char **array)
 
 void	print_commands(t_command *commands)
 {
+	t_mlist	*redirect;
+
 	while (commands)
 	{
-		t_mlist	*redirect = commands->redirect;
-
+		redirect = commands->redirect;
 		printf("str_list\n");
 		print_char_array(commands->command);
 		printf("redirect\n");

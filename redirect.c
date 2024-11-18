@@ -46,7 +46,7 @@ void	redirect_all(t_shell *shell)
 
 	shell->sa.sa_handler = heredoc_handler;
 	if (sigaction(SIGINT, &shell->sa, NULL) == -1)
-    	error_exit("sigaction");
+		error_exit("sigaction");
 	commands = shell->commands;
 	while (commands)
 	{

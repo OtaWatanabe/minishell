@@ -51,8 +51,8 @@ int	count_token(char *str)
 	while (*str)
 	{
 		ret += check_special(str, quote_flag);
-		if ((quote_flag == 1 && *str == '\'')
-			|| (quote_flag == 2 && *str == '\"'))
+		if ((quote_flag == 1 && *str == '\'') || (quote_flag == 2
+				&& *str == '\"'))
 			quote_flag = 0;
 		else if (!quote_flag)
 		{
@@ -86,11 +86,11 @@ char	*get_token(char *str)
 		return (special_case(str));
 	while (str[i])
 	{
-		if ((quote_flag == 1 && str[i] == '\'')
-			|| (quote_flag == 2 && str[i] == '\"'))
+		if ((quote_flag == 1 && str[i] == '\'') || (quote_flag == 2
+				&& str[i] == '\"'))
 			quote_flag = 0;
-		else if (!quote_flag && (str[i] == ' ' || str[i] == '<'
-				|| str[i] == '>' || str[i] == '|'))
+		else if (!quote_flag && (str[i] == ' ' || str[i] == '<' || str[i] == '>'
+					|| str[i] == '|'))
 			return (ft_substr(str, 0, i));
 		else if (!quote_flag)
 			quote_flag = (str[i] == '\'') + (str[i] == '\"') * 2;

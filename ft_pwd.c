@@ -17,20 +17,20 @@
         そいつをprintfすればいい。
     */
 
-int    ft_pwd(void)
+int	ft_pwd(void)
 {
-    char    *buf;
+	char	*buf;
 
-    buf = getcwd(NULL, 0);
-    if (buf == NULL)
-    {
-        perror("pwd: ");
-        return (1);
-    }
-    else
-    {
-        printf("%s\n", buf);
-        free(buf);
-    }
-    return (0);
+	buf = getcwd(NULL, 0);
+	if (buf == NULL)
+	{
+		perror("pwd: ");
+		return (1);
+	}
+	else
+	{
+		printf("%s\n", buf);
+		free(buf);
+	}
+	return (0);
 }

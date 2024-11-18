@@ -104,7 +104,7 @@ void	reset(t_shell *shell)
 		shell->exit_status = 1;
 	if (g_signal == 2)
 		shell->exit_status = 130;
-	if (g_signal ==3)
+	if (g_signal == 3)
 		shell->exit_status = 131;
 	g_signal = 0;
 	free_commands(shell->commands);
@@ -118,8 +118,9 @@ int	pipe_all(t_shell *shell)
 	int			status;
 
 	shell->sa.sa_handler = parent;
-	if (sigaction(SIGINT, &shell->sa, NULL) == -1 || sigaction(SIGQUIT, &shell->sa, NULL) == -1)
-    	error_exit("sigaction");
+	if (sigaction(SIGINT, &shell->sa, NULL) == -1 || sigaction(SIGQUIT,
+			&shell->sa, NULL) == -1)
+		error_exit("sigaction");
 	commands = shell->commands;
 	while (commands)
 	{

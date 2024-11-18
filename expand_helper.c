@@ -25,8 +25,8 @@ size_t	get_head_len(char *str)
 	{
 		if (!quote && (str[i] == '\'' || str[i] == '\"'))
 			quote = (str[i] == '\'') + (str[i] == '\"') * 2;
-		else if ((quote == 1 && str[i] == '\'')
-			|| (quote == 2 && str[i] == '\"'))
+		else if ((quote == 1 && str[i] == '\'') || (quote == 2
+					&& str[i] == '\"'))
 			quote = 0;
 		else if (!quote && str[i] == ' ')
 			return (len);
