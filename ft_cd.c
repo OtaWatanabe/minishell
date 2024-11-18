@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 14:26:14 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 14:33:13 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 15:43:53 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,7 @@ int    chdir_set(t_shell *shell, char *path_str)
         perror(path_str);
         return (1);
     }
-    if (exist_str(shell->env_array, "OLDPWD=", 7))
-        pwd_set(shell, 2);
+    pwd_set(shell, 2);
     pwd_set(shell, 1);
     return (0);
 }
@@ -69,13 +68,16 @@ int    chdir_set(t_shell *shell, char *path_str)
 int    ft_cd(t_shell *shell, char **command)
 {
     char    *cd_str;
+	int		ret;
 
 	if (shell->if_pipe)
 		return (0);
     if (command[1] == NULL || command[1][0] == '\0')
     {
         cd_str = get_env(shell, "HOME");
-        return (chdir_set(shell, cd_str));
+		ret = chdir_set(shell, cd_str);
+		free(cd_str);
+        return (ret);
     }
     if (chdir_set(shell, command[1]) != 0)
         return (1);

@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 14:26:19 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 14:28:40 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 16:04:32 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int    has_option(char **commands)
             return (0);
         i++;
     }
+	if (i == 1)
+		return (0);
     return (1);
 }
 
@@ -58,6 +60,8 @@ int    is_option(char *commands)
             return (1);
         i++;
     }
+	if (i == 1)
+		return (1);
     return (0);
 }
 

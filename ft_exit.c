@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 14:27:58 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 15:03:40 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 16:09:59 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	check_status(char **commands)
 		return (255);
     if (i == 2)
         return (ft_atoi(commands[1]) % 256);
-    return (1);
+    return (300);
 }
 
 int    ft_exit(t_shell *shell, char **commands)
@@ -46,7 +46,7 @@ int    ft_exit(t_shell *shell, char **commands)
     int exit_status;
 
 	exit_status = check_status(commands);
-	if (exit_status == 1)
+	if (exit_status == 300)
 	{
 		ft_putstr_fd("mini: exit: too many arguments\n", 2);
     	return (1);

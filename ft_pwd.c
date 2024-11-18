@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 14:28:04 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 14:28:04 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 15:49:10 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int    ft_pwd(void)
     buf = getcwd(NULL, 0);
     if (buf == NULL)
     {
-        perror("pwd:");
+        perror("pwd: ");
         return (1);
     }
     else

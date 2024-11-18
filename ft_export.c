@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 14:28:01 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 14:28:01 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 15:24:54 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int	ft_export(t_shell *shell, char **command)
 {
 	char	*tmp;
 
-	printf("export\n");
 	while (*command)
 	{
 		tmp = ft_strchr(*command, '=');
@@ -31,7 +30,6 @@ int	ft_export(t_shell *shell, char **command)
 		{
 			*tmp = '\0';
 			set_env(shell, *command, tmp + 1);
-			printf("set: %s %s\n", *command, tmp + 1);
 		}
 		++command;
 	}
