@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
+/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 22:32:27 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/15 18:18:02 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/11/18 17:25:52 by owatanab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	set_path(t_shell *shell, char *str)
 	size_t	i;
 	char	*tmp;
 
+	if (shell->env_path)
+		free_char_array(shell->env_path);
 	shell->env_path = ft_split(str, ':');
 	if (shell->env_path == NULL)
 		error_exit("malloc");
