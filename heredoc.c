@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:20:12 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 17:04:44 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 16:09:36 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,23 +80,19 @@ char	*h_expand_env(t_shell *shell, char *str)
 	return (ret);
 }
 
-void	read_doc(t_shell *shell, char *filename, char *eof)
+void	read_doc(t_shell *shell, char *eof, int fd)
 {
 	char	*tmp;
-	int		fd;
 
-	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-	if (fd == -1)
-		error_exit("open");
 	while (1)
 	{
 		shell->input = readline("> ");
-		if (g_signal)
-			return ;
 		tmp = shell->input;
-		if (tmp == NULL || ft_strncmp(tmp, eof, ft_strlen(eof) + 1) == 0)
+		if (g_signal || tmp == NULL || ft_strncmp(tmp, eof, ft_strlen(eof) + 1) == 0)
 		{
 			close(fd);
+			if (g_signal)
+				return ;
 			free(tmp);
 			shell->input = NULL;
 			return ;
@@ -116,15 +112,17 @@ int	here_doc(t_shell *shell, t_mlist *here)
 	filename = get_filename();
 	if (dup2(shell->in_fd_dup, 0) == -1 || dup2(shell->out_fd_dup, 1) == -1)
 		error_exit("dup2");
-	read_doc(shell, filename, here->name);
+	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+	if (fd == -1)
+		error_exit("open");
+	add_list(&shell->tmpfile, filename, NULL, 0);
+	read_doc(shell, here->name, fd);
 	if (g_signal)
 	{
 		free(filename);
 		return (-1);
 	}
-	here = here->next;
-	fd = open_dup(filename);
-	add_list(&shell->tmpfile, filename, NULL, 0);
+	fd = open_dup(shell, filename);
 	free(filename);
 	return (fd);
 }

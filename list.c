@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 21:32:58 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 12:19:56 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 14:10:47 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,23 +32,9 @@ char	**list_to_array(t_mlist *list)
 	i = 0;
 	while (tmp)
 	{
-		ret[i] = ft_strdup(tmp->name);
-		if (ret[i++] == NULL)
-			error_exit("malloc");
+		ret[i++] = error_strdup(tmp->name);
 		tmp = tmp->next;
 	}
-	return (ret);
-}
-
-char	*error_strdup(char *str)
-{
-	char	*ret;
-
-	if (str == NULL)
-		return (NULL);
-	ret = ft_strdup(str);
-	if (ret == NULL)
-		error_exit("malloc");
 	return (ret);
 }
 

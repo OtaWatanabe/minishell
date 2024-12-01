@@ -6,13 +6,13 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 10:35:42 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 16:56:04 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 14:04:08 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
 
-t_mlist	*expand_str(t_shell *shell, t_mlist *list, int if_redirect)
+t_mlist	*expand_str(t_shell *shell, t_mlist *list)
 {
 	char	*before;
 	t_mlist	*tmp;
@@ -21,11 +21,10 @@ t_mlist	*expand_str(t_shell *shell, t_mlist *list, int if_redirect)
 	before = list->name;
 	if (list->str == NULL || ft_strncmp(list->str, "<<", 3))
 		list->name = expand_env(shell, before, 0);
-	tmp = list;
-	tmp1 = tmp->next;
-	tmp = expand_split(tmp);
+	tmp1 = list->next;
+	tmp = expand_split(list);
 	tmp->next = tmp1;
-	if (if_redirect && (tmp != list || tmp->name == NULL))
+	if (list->str && (tmp != list || tmp->name == NULL))
 	{
 		ambiguous_error(shell, before);
 		free(before);
@@ -36,14 +35,14 @@ t_mlist	*expand_str(t_shell *shell, t_mlist *list, int if_redirect)
 	return (tmp);
 }
 
-int	expand_list(t_shell *shell, t_mlist **list, int if_redirect)
+int	expand_list(t_shell *shell, t_mlist **list)
 {
 	t_mlist	*tmp;
 
 	tmp = *list;
 	while (tmp)
 	{
-		tmp = expand_str(shell, tmp, if_redirect);
+		tmp = expand_str(shell, tmp);
 		if (tmp == NULL)
 			return (-1);
 		tmp = tmp->next;
@@ -110,23 +109,18 @@ char	*extract_env(t_shell *shell, char *str, int quote)
 {
 	char	*env_str;
 	char	*tmp;
-	char	*ret;
 	size_t	i;
 
 	i = 0;
+	if (*str == '?')
+		return (free_strjoin(ft_itoa(shell->exit_status), expand_env(shell, str + 2, quote)));
 	while (str[i] && str[i] != '\'' && str[i] != '\"' && str[i] != ':'
-		&& str[i] != '$')
+		&& str[i] != '$' && str[i] != '?')
 		++i;
 	tmp = ft_substr(str, 0, i);
 	if (tmp == NULL)
 		error_exit("malloc");
 	env_str = get_env(shell, tmp);
 	free(tmp);
-	tmp = expand_env(shell, str + i, quote);
-	ret = ft_strjoin(env_str, tmp);
-	free(tmp);
-	free(env_str);
-	if (ret == NULL)
-		error_exit("malloc");
-	return (ret);
+	return (free_strjoin(env_str, expand_env(shell, str + i, quote)));
 }

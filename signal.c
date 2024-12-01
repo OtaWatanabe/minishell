@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/16 15:08:31 by owatanab          #+#    #+#             */
-/*   Updated: 2024/11/18 17:09:58 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 17:25:15 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,7 @@ void	parent(int signum)
 	if (signum == SIGINT)
 		g_signal = 2;
 	if (signum == SIGQUIT)
-	{
 		g_signal = 3;
-		ft_putstr_fd("Quit: 3\n", 2);
-	}
 }
 
 void	read_handler(int signum)

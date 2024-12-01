@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 18:01:37 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 10:25:04 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 14:34:12 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ void	redirect_all(t_shell *shell)
 		redirect = commands->redirect;
 		while (redirect)
 		{
-			if (redirect->name[0] == '<' && commands->in_fd != 0)
+			if (redirect->str[0] == '<' && commands->in_fd != 0)
 				close(commands->in_fd);
-			else if (redirect->name[0] == '>' && commands->out_fd != 1)
+			else if (redirect->str[0] == '>' && commands->out_fd != 1)
 				close(commands->out_fd);
 			if (redirect_each(shell, commands, redirect) == -1)
 				break ;

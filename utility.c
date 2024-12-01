@@ -1,32 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   utility.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/31 14:17:50 by otawatanabe       #+#    #+#             */
-/*   Updated: 2023/11/06 06:39:28 by otawatanabe      ###   ########.fr       */
+/*   Created: 2024/12/01 13:17:27 by otawatanabe       #+#    #+#             */
+/*   Updated: 2024/12/01 13:19:22 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "ft_minishell.h"
 
-char	*concat(char *s1, char *s2, ssize_t l2);
-int		check_new_line(char **s, char **line, ssize_t max);
-char	*buf_read(int fd, char **rest, char *line);
-
-char	*get_next_line(int fd)
+char	*free_strjoin(char *s1, char *s2)
 {
-	char		*line;
-	static char	*rest;
+	char	*ret;
 
-	if (BUFFER_SIZE <= 0)
+	if (s1 == NULL || s2 == NULL)
+		error_exit("malloc");
+	ret = ft_strjoin(s1, s2);
+	if (ret == NULL)
+		error_exit("malloc");
+	free(s1);
+	free(s2);
+	return (ret);
+}
+
+char	*error_strdup(char *str)
+{
+	char	*ret;
+
+	if (str == NULL)
 		return (NULL);
-	line = NULL;
-	if ((rest && check_new_line(&rest, &line, -1) == 0))
-		return (line);
-	free(rest);
-	rest = NULL;
-	return (buf_read(fd, &rest, line));
+	ret = ft_strdup(str);
+	if (ret == NULL)
+		error_exit("malloc");
+	return (ret);
 }

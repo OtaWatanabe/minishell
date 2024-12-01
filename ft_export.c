@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 14:28:01 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 15:24:54 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 15:19:37 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_export(t_shell *shell, char **command)
 	while (*command)
 	{
 		tmp = ft_strchr(*command, '=');
-		if (tmp == *command)
+		if (tmp == *command || **command == '?')
 		{
 			ft_putstr_fd("mini: export: `", 2);
 			ft_putstr_fd(tmp, 2);

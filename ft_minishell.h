@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_minishell.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: owatanab <owatanab@student.42.fr>          +#+  +:+       +#+        */
+/*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:52 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 17:19:32 by owatanab         ###   ########.fr       */
+/*   Updated: 2024/12/01 16:23:28 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <signal.h>
+# include <sys/stat.h>
 
 extern int	g_signal;
 
@@ -79,7 +80,7 @@ char		*error_strdup(char *str);
 void		execute_all(t_shell *shell);
 int			expand_all(t_shell *shell, t_command *commands);
 char		*expand_env(t_shell *shell, char *str, int quote);
-int			expand_list(t_shell *shell, t_mlist **list, int if_redirect);
+int			expand_list(t_shell *shell, t_mlist **list);
 t_mlist		*expand_split(t_mlist *str_list);
 char		*extract_env(t_shell *shell, char *str, int quote);
 void		free_char_array(char **array);
@@ -87,6 +88,7 @@ void		free_commands(t_command *commands);
 void		free_entire_list(t_mlist *list);
 void		free_list_element(t_mlist *list);
 void		free_shell(t_shell *shell);
+char		*free_strjoin(char *s1, char *s2);
 int			ft_cd(t_shell *shell, char **command);
 int			ft_echo(char **command);
 int			ft_env(t_shell *shell);
@@ -105,7 +107,7 @@ void		init_shell(t_shell *shell, char **env);
 char		**lexer(char *input);
 void		init_sigaction(t_shell *shell);
 char		**list_to_array(t_mlist *list);
-int			open_dup(char *filename);
+int			open_dup(t_shell *shell, char *filename);
 void		parent(int signum);
 t_command	*parser(t_shell *shell, char **tokens);
 int			get_quote_status(int quote, char c);

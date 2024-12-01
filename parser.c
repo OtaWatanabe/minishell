@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 11:30:07 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 16:55:34 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 14:23:24 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	add_redirect(t_shell *shell, t_command *command, char **tokens)
 {
 	if (tokens[1] == NULL)
-		return (syntax_error(shell, NULL));
+		return (syntax_error(shell, "newline"));
 	if (tokens[1][0] == '|' || tokens[1][0] == '<' || tokens[1][0] == '>')
 		return (syntax_error(shell, tokens[1]));
 	add_list(&command->redirect, tokens[1], tokens[0], 0);
@@ -54,11 +54,11 @@ int	expand_all(t_shell *shell, t_command *commands)
 	tmp = commands;
 	while (tmp)
 	{
-		expand_list(shell, &tmp->tmp, 0);
+		expand_list(shell, &tmp->tmp);
 		tmp->command = list_to_array(tmp->tmp);
 		free_entire_list(tmp->tmp);
 		tmp->tmp = NULL;
-		if (expand_list(shell, &tmp->redirect, 1) == -1)
+		if (expand_list(shell, &tmp->redirect) == -1)
 			return (-1);
 		tmp = tmp->next;
 	}

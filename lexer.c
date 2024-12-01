@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 18:49:00 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 17:08:45 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 11:25:12 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 int	check_special(char *str, int quote_flag)
 {
-	if (quote_flag)
+	if (((quote_flag == 2 && *str != '\"') || (quote_flag == 1 && *str != '\'')))
+		return (0);
+	if (quote_flag == 0 && (*str == '\'' || *str == '\"'))
 		return (0);
 	if (*str == '<')
 	{

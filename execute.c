@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 18:48:04 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 16:45:32 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 17:20:33 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	mini_execute(t_shell *shell, t_command *commands)
 	pid_t	p;
 	int		status;
 
-	if (commands->in_fd == -1 || commands->out_fd == -1 || g_signal == 2)
+	if (commands->in_fd == -1 || commands->out_fd == -1 || g_signal)
 		return (-1);
 	if (commands->next && pipe(shell->pipe_fd) == -1)
 		error_exit("pipe");
@@ -63,12 +63,12 @@ pid_t	wait_all(t_shell *shell, int status)
 	t_mlist	*tmp;
 	int		stat;
 
-	if (shell->pid == NULL)
-		return (0);
 	tmp = shell->pid;
 	while (tmp)
 	{
 		waitpid(tmp->num, &stat, 0);
+		if (errno == EINTR)
+			continue ;
 		tmp = tmp->next;
 	}
 	if (status == -1)

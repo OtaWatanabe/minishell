@@ -6,11 +6,16 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 19:44:22 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 17:10:19 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 16:45:02 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_minishell.h"
+
+// __attribute__((destructor))
+// static void destructor() {
+// 	system("leaks -q minishell");
+// }
 
 void	print_char_array(char **array)
 {

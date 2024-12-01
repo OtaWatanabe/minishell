@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 10:38:41 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/18 16:55:57 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 14:08:20 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,9 @@ size_t	get_head_len(char *str)
 
 char	*skip_space(char *str)
 {
-	size_t	i;
-
-	i = 0;
-	while (str[i] == ' ')
-		++i;
-	return (str + i);
+	while (*str == ' ')
+		++str;
+	return (str);
 }
 
 char	*set_next(t_mlist **str_list, char *str, int if_first)

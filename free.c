@@ -6,7 +6,7 @@
 /*   By: otawatanabe <otawatanabe@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/13 17:56:57 by otawatanabe       #+#    #+#             */
-/*   Updated: 2024/11/16 12:19:22 by otawatanabe      ###   ########.fr       */
+/*   Updated: 2024/12/01 11:55:12 by otawatanabe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ void	free_commands(t_command *commands)
 {
 	t_command	*tmp;
 
-	if (commands == NULL)
-		return ;
 	while (commands)
 	{
 		tmp = commands->next;
